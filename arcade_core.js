@@ -1,9 +1,9 @@
 /* =========================================================
    FREEzzzGames — Arcade Core
-   Version 1.0
+   Version 1.1
 
-   Единое хранилище ЧИСЛОВЫХ результатов аркад.
-   Игровой логики здесь НЕТ.
+   Единое хранилище числовых результатов аркад.
+   Игровой логики здесь нет.
    ========================================================= */
 
 (function () {
@@ -14,6 +14,7 @@
   const DEFAULTS = {
     reactionBest: 0,
     racingBest: 0,
+    runnerBest: 0,
     totalScore: 0
   };
 
@@ -21,26 +22,23 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
 
-      if (!raw) {
-        return { ...DEFAULTS };
-      }
+      if (!raw) return { ...DEFAULTS };
 
       const saved = JSON.parse(raw);
 
       return {
         reactionBest: Number.isFinite(Number(saved.reactionBest))
-          ? Math.max(0, Number(saved.reactionBest))
-          : 0,
+          ? Math.max(0, Number(saved.reactionBest)) : 0,
 
         racingBest: Number.isFinite(Number(saved.racingBest))
-          ? Math.max(0, Number(saved.racingBest))
-          : 0,
+          ? Math.max(0, Number(saved.racingBest)) : 0,
+
+        runnerBest: Number.isFinite(Number(saved.runnerBest))
+          ? Math.max(0, Number(saved.runnerBest)) : 0,
 
         totalScore: Number.isFinite(Number(saved.totalScore))
-          ? Math.max(0, Number(saved.totalScore))
-          : 0
+          ? Math.max(0, Number(saved.totalScore)) : 0
       };
-
     } catch (error) {
       return { ...DEFAULTS };
     }
@@ -48,19 +46,12 @@
 
   function write(data) {
     try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-      );
-    } catch (error) {
-      // Игра продолжает работать,
-      // даже если localStorage недоступен.
-    }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {}
   }
 
   function getNumber(name) {
-    const data = read();
-    return Number(data[name]) || 0;
+    return Number(read()[name]) || 0;
   }
 
   function setNumber(name, value) {
@@ -72,7 +63,6 @@
       : 0;
 
     write(data);
-
     return data[name];
   }
 
@@ -85,9 +75,7 @@
 
   window.ArcadeCore = {
 
-    // =========================
-    // REACTION
-    // =========================
+    /* ---------- REACTION ---------- */
 
     getReactionBest() {
       return getNumber("reactionBest");
@@ -98,9 +86,7 @@
     },
 
 
-    // =========================
-    // RACING
-    // =========================
+    /* ---------- RACING ---------- */
 
     getRacingBest() {
       return getNumber("racingBest");
@@ -111,9 +97,18 @@
     },
 
 
-    // =========================
-    // TOTAL SCORE
-    // =========================
+    /* ---------- CYBER RUNNER ---------- */
+
+    getRunnerBest() {
+      return getNumber("runnerBest");
+    },
+
+    setRunnerBest(value) {
+      return setNumber("runnerBest", value);
+    },
+
+
+    /* ---------- TOTAL ---------- */
 
     getTotalScore() {
       return getNumber("totalScore");
@@ -128,9 +123,7 @@
     },
 
 
-    // =========================
-    // ALL NUMBERS
-    // =========================
+    /* ---------- READ-ONLY SNAPSHOT ---------- */
 
     getNumbers() {
       return read();
