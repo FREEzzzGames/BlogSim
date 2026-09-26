@@ -737,7 +737,7 @@ let E=Math.max(0,Math.min(100,s.player.energy||0));
 $("money").textContent=money(s.player.money);
 $("studioViewsMini").textContent=V.toLocaleString("de-DE");
 $("studioSubsMini").textContent=S.toLocaleString("de-DE");
-$("studioLevelHero").textContent=L;
+if($("studioLevelHero")) $("studioLevelHero").textContent=L;
 if($("hudMoney")) $("hudMoney").textContent=money(s.player.money);
 
 if($("hudXp")) $("hudXp").style.width=(X%100)+"%";
