@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FREEzzz Arcade — Cyber Ninja Runner</title>
+
+<script src="arcade_core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none}
+body{
+  background:#05070b;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  font-family:monospace;
+}
+#game-container{
+  width:100%;
+  max-width:450px;
+  aspect-ratio:9/16;
+  box-shadow:0 0 30px rgba(53,184,255,.25);
+  border:2px solid #52606c;
+  position:relative;
+}
+</style>
+</head>
+
+<body>
+<div id="game-container"></div>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg) tg.expand();
+
+const RUNNER_BEST_KEY='runnerBest';
+
+class CyberGame extends Phaser.Scene{
+  constructor(){super('CyberGame')}
+
+  preload(){
+    const g=this.add.graphics();
+
+    g.fillStyle(0xff2638,1);
+    g.fillRect(0,0,100,20);
+    g.generateTexture('platform',100,20);
+    g.clear();
+
+    g.fillStyle(0x35b8ff,1);
+    g.fillRect(0,0,28,40);
+    g.fillStyle(0xffd54a,1);
+    g.fillRect(18,8,6,4);
+    g.generateTexture('ninja',28,40);
+    g.clear();
+
+    g.fillStyle(0xffd54a,1);
+    g.fillCircle(12,12,12);
+    g.generateTexture('drone',24,24);
+    g.clear();
+  }
+
+  create(){
+    this.score=0;
+    this.isGameOver=false;
+    this.canJump=false;
+    this.best=Number(localStorage.getItem(RUNNER_BEST_KEY)||0);
+
+    this.cameras.main.setBackgroundColor('#080c13');
+
+    this.scoreText=this.add.text(20,20,'SCORE: 0',{
+      font:'18px Courier New',
+      color:'#35b8ff'
+    });
+
+    this.bestText=this.add.text(20,43,'BEST: '+this.best,{
+      font:'12px Courier New',
+      color:'#ffd54a'
+    });
+
+    this.platforms=this.physics.add.group({
+      immovable:true,
+      allowGravity:false
+    });
+
+    const firstPlat=this.platforms.create(150,500,'platform');
+    firstPlat.setDisplaySize(300,20);
+
+    this.player=this.physics.add.sprite(150,400,'ninja');
+    this.player.setBounce(.1);
+    this.player.setCollideWorldBounds(true);
+    this.player.body.setGravityY(800);
+
+    this.physics.add.collider(this.player,this.platforms,()=>{
+      this.canJump=true;
+    });
+
+    this.obstacles=this.physics.add.group();
+
+    this.input.on('pointerdown',()=>{
+      if(this.isGameOver){
+        this.scene.restart();
+        return;
+      }
+
+      if(this.canJump||this.player.body.touching.down){
+        this.player.setVelocityY(-450);
+        this.canJump=false;
+        if(tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      }
+    });
+
+    this.time.addEvent({
+      delay:1500,
+      callback:this.spawnObjects,
+      callbackScope:this,
+      loop:true
+    });
+  }
+
+  spawnObjects(){
+    if(this.isGameOver)return;
+
+    const x=400;
+    const y=Phaser.Math.Between(300,550);
+
+    const plat=this.platforms.create(x,y,'platform');
+    plat.setVelocityX(-200);
+    plat.setImmovable(true);
+
+    if(Math.random()>.4){
+      const drone=this.obstacles.create(x,y-50,'drone');
+      drone.setVelocityX(-200);
+      drone.body.allowGravity=false;
+    }
+
+    this.score+=10;
+    this.scoreText.setText('SCORE: '+this.score);
+
+    if(this.score>this.best){
+      this.best=this.score;
+      this.bestText.setText('BEST: '+this.best);
+      localStorage.setItem(RUNNER_BEST_KEY,String(this.best));
+    }
+  }
+
+  update(){
+    if(this.isGameOver)return;
+
+    if(this.player.y>700){
+      this.gameOver();
+      return;
+    }
+
+    this.physics.overlap(this.player,this.obstacles,()=>{
+      this.gameOver();
+    });
+
+    this.platforms.getChildren().forEach(plat=>{
+      if(plat.x<-100)plat.destroy();
+    });
+
+    this.obstacles.getChildren().forEach(obs=>{
+      if(obs.x<-50)obs.destroy();
+    });
+  }
+
+  gameOver(){
+    if(this.isGameOver)return;
+
+    this.isGameOver=true;
+    this.physics.pause();
+    this.player.setTint(0xff2638);
+
+    if(this.score>this.best){
+      this.best=this.score;
+      localStorage.setItem(RUNNER_BEST_KEY,String(this.best));
+    }
+
+    try{
+      if(window.ArcadeCore?.setRunnerBest){
+        ArcadeCore.setRunnerBest(this.best);
+      }
+    }catch(e){}
+
+    if(tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+
+    this.add.text(
+      this.scale.width/2,
+      this.scale.height/2,
+      'GAME OVER\n\nTAP TO RESTART',
+      {
+        font:'22px Courier New',
+        color:'#ff2638',
+        align:'center'
+      }
+    ).setOrigin(.5);
+  }
+}
+
+const config={
+  type:Phaser.AUTO,
+  width:360,
+  height:640,
+  parent:'game-container',
+  physics:{
+    default:'arcade',
+    arcade:{
+      gravity:{y:0},
+      debug:false
+    }
+  },
+  scene:CyberGame
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>
