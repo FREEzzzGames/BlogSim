@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>FREEzzz Arcade — 8-Bit Racing</title>
+<script src="core.js"></script>
 <script src="arcade_core.js"></script>
 <style>
 :root{--bg:#05070b;--line:#52606c;--red:#ff2638;--blue:#35b8ff;--green:#39e879;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4}
@@ -29,22 +30,43 @@ body{display:flex;justify-content:center;align-items:center}
 .steer-controls,.pedal-controls{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .race-btn{min-height:48px;border:1px solid #65727e;border-radius:7px;background:linear-gradient(#27343f,#111920);color:#fff;font-size:20px;font-weight:950;box-shadow:inset 0 1px 0 #ffffff18,0 3px 8px #0008;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 .race-btn small{display:block;font-size:5px;letter-spacing:.6px;margin-top:1px}
-.race-btn.gas{border-color:#3caa6d}.race-btn.brake{border-color:#a94750}.race-btn:active,.race-btn.pressed{transform:translateY(1px);background:#263d4b}
+.race-btn.gas{border-color:#3caa6d}.race-btn:active,.race-btn.pressed{transform:translateY(1px);background:#263d4b}
 .race-actions{display:grid;grid-template-columns:2fr 1fr;gap:6px}
 .start{width:100%;height:43px;border-radius:7px;border:1px solid #52606c;color:#fff;background:linear-gradient(#27343f,#111920);font-size:9px;font-weight:950;letter-spacing:.5px}
 .primary{background:linear-gradient(135deg,#ff394a,#c91627);border-color:#ff5967;box-shadow:0 0 14px #ff263833,inset 0 1px 0 #ffffff22}
 .message{min-height:30px;text-align:center;color:var(--muted);font-size:8px;display:flex;align-items:center;justify-content:center}
 .footer{text-align:center;color:#66727e;font-size:6.5px;padding-top:4px;border-top:1px solid #202a33}
 @media(max-height:650px){.page{gap:5px;padding:6px}.racing-card{padding:6px;gap:4px}.race-btn{min-height:40px}.race-stats{font-size:7px}.race-hud-item{font-size:6px;padding:3px 5px}}
+
+.car-shop{border:1px solid #3b4650;border-radius:8px;padding:7px;background:#0b1117}
+.car-shop-title{text-align:center;font-size:7px;font-weight:950;letter-spacing:.8px;color:#c9d0d7;margin-bottom:6px}
+.car-colors{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.car-color{min-width:0;min-height:43px;border:1px solid #46535e;border-radius:6px;background:#111820;color:#fff;padding:4px 2px;font-size:5.5px;font-weight:900;touch-action:manipulation}
+.car-color .swatch{width:20px;height:20px;margin:0 auto 3px;border-radius:4px;border:2px solid #7b8792;box-shadow:inset 0 1px 0 #ffffff44}
+.car-color.selected{border-color:#35b8ff;box-shadow:0 0 9px #35b8ff33}
+.car-color.locked{opacity:.65}
+.car-color .price{display:block;color:#ffd54a;margin-top:2px}
+@media(max-height:650px){.car-color{min-height:38px}.car-color .swatch{width:17px;height:17px}}
 </style>
 </head>
 <body>
 <main class="page">
 <div class="head"><button class="home" onclick="location.href='arcade.html'" aria-label="Назад">⌂</button><div class="title">⚡ FREEzzz ARCADE — RACING</div></div>
+<section class="car-shop">
+<div class="car-shop-title">🏎️ ВЫБОР ЦВЕТА АВТО</div>
+<div class="car-colors">
+<button class="car-color selected" type="button" data-color="white"><span class="swatch" style="background:#f5f7fa"></span>БЕЛЫЙ<span class="price">FREE</span></button>
+<button class="car-color locked" type="button" data-color="silver"><span class="swatch" style="background:#aeb7bf"></span>СЕРЕБРО<span class="price">€500</span></button>
+<button class="car-color locked" type="button" data-color="gold"><span class="swatch" style="background:#d7a928"></span>ЗОЛОТО<span class="price">€1.5K</span></button>
+<button class="car-color locked" type="button" data-color="platinum"><span class="swatch" style="background:#cbd4dc"></span>ПЛАТИНА<span class="price">€4K</span></button>
+<button class="car-color locked" type="button" data-color="rose"><span class="swatch" style="background:#c98788"></span>РОЗ. ЗОЛОТО<span class="price">€8K</span></button>
+</div>
+</section>
+
 <section class="racing-card">
 <div class="racing-head"><div class="kicker">🏎️ ARCADE MODE</div><h1 class="racing-title">8-BIT ROAD RACER</h1><div class="race-stats"><span id="raceSpeed">SPEED 0</span><span id="raceDistance">DIST 0</span><span>BEST <b id="raceBest">0</b></span></div></div>
 <div class="race-wrap"><canvas id="raceCanvas" width="360" height="430" aria-label="8-bit гоночная трасса"></canvas><div class="race-hud"><div class="race-hud-item">🏁 <span id="raceLap">LAP 1</span></div><div class="race-hud-item">⭐ <span id="raceScore">0</span></div></div></div>
-<div class="race-controls"><div class="steer-controls"><button class="race-btn" id="leftBtn" type="button">◀</button><button class="race-btn" id="rightBtn" type="button">▶</button></div><div class="pedal-controls"><button class="race-btn gas" id="gasBtn" type="button">⛽<small>ГАЗ</small></button><button class="race-btn brake" id="brakeBtn" type="button">🛑<small>ТОРМОЗ</small></button></div></div>
+<div class="race-controls"><div class="steer-controls"><button class="race-btn" id="leftBtn" type="button">◀</button><button class="race-btn" id="rightBtn" type="button">▶</button></div><div class="pedal-controls"><button class="race-btn gas" id="gasBtn" type="button">⛽<small>ГАЗ</small></button></div></div>
 <div class="race-actions"><button class="start primary" id="raceStart" type="button">СТАРТ ГОНКИ</button><button class="start" id="raceReset" type="button">ЗАНОВО</button></div>
 <div class="message" id="raceMsg">Нажми «СТАРТ ГОНКИ»</div>
 </section>
@@ -52,14 +74,25 @@ body{display:flex;justify-content:center;align-items:center}
 </main>
 <script>
 const race={running:false,x:180,speed:0,distance:0,score:0,laneOffset:0,obstacles:[],spawn:0,last:0,raf:0,keys:{left:false,right:false,gas:false,brake:false}};
+const CAR_COLORS={white:'#f5f7fa',silver:'#aeb7bf',gold:'#d7a928',platinum:'#cbd4dc',rose:'#c98788'};
+const CAR_PRICES={white:0,silver:500,gold:1500,platinum:4000,rose:8000};
+const CAR_NAMES={white:'БЕЛЫЙ',silver:'СЕРЕБРО',gold:'ЗОЛОТО',platinum:'ПЛАТИНА',rose:'РОЗОВОЕ ЗОЛОТО'};
+let carColor=localStorage.getItem('tube_empire_racing_color')||'white';
+let ownedColors=JSON.parse(localStorage.getItem('tube_empire_racing_owned')||'["white"]');
+if(!Array.isArray(ownedColors)||!ownedColors.includes('white')) ownedColors=['white',...(Array.isArray(ownedColors)?ownedColors:[])];
+function saveCarState(){localStorage.setItem('tube_empire_racing_color',carColor);localStorage.setItem('tube_empire_racing_owned',JSON.stringify(ownedColors))}
+function refreshCarShop(){document.querySelectorAll('.car-color').forEach(b=>{const c=b.dataset.color;const owned=ownedColors.includes(c);b.classList.toggle('locked',!owned);b.classList.toggle('selected',c===carColor);const price=b.querySelector('.price');price.textContent=owned?(c===carColor?'ВЫБРАНО':'КУПЛЕНО'):(c==='white'?'FREE':'€'+CAR_PRICES[c].toLocaleString('de-DE'));});}
+function chooseCarColor(c){if(!CAR_COLORS[c])return;if(ownedColors.includes(c)){carColor=c;saveCarState();refreshCarShop();return;}const price=CAR_PRICES[c];if(!window.Core||typeof Core.spendMoney!=='function'){alert('Экономика недоступна');return;}if(Core.spendMoney(price)){ownedColors.push(c);carColor=c;saveCarState();refreshCarShop();}else{const money=Math.floor(Core.getMoney());alert('Недостаточно денег. Нужно €'+price.toLocaleString('de-DE')+'\nБаланс: €'+money.toLocaleString('de-DE'));}}
+document.querySelectorAll('.car-color').forEach(b=>b.addEventListener('click',()=>chooseCarColor(b.dataset.color)));
+refreshCarShop();
 const raceCanvas=document.getElementById('raceCanvas');const ctx=raceCanvas.getContext('2d');ctx.imageSmoothingEnabled=false;
 function best(){return ArcadeCore.getRacingBest()||0}
 function updateBest(){document.getElementById('raceBest').textContent=best()}
 function setRaceButton(id,key){const b=document.getElementById(id);const down=e=>{e.preventDefault();race.keys[key]=true;b.classList.add('pressed')};const up=e=>{e.preventDefault();race.keys[key]=false;b.classList.remove('pressed')};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('pointerleave',up)}
-setRaceButton('leftBtn','left');setRaceButton('rightBtn','right');setRaceButton('gasBtn','gas');setRaceButton('brakeBtn','brake');
+setRaceButton('leftBtn','left');setRaceButton('rightBtn','right');setRaceButton('gasBtn','gas');
 window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')race.keys.left=true;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')race.keys.right=true;if(e.key==='ArrowUp'||e.key.toLowerCase()==='w')race.keys.gas=true;if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')race.keys.brake=true});
 window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')race.keys.left=false;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')race.keys.right=false;if(e.key==='ArrowUp'||e.key.toLowerCase()==='w')race.keys.gas=false;if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')race.keys.brake=false});
-function drawPixelCar(x,y,player=false){ctx.fillStyle=player?'#e52b3a':'#35b8ff';ctx.fillRect(x-10,y-15,20,30);ctx.fillStyle=player?'#ff6a72':'#8be0ff';ctx.fillRect(x-7,y-10,14,9);ctx.fillStyle='#101820';ctx.fillRect(x-6,y-7,12,5);ctx.fillStyle='#111';ctx.fillRect(x-13,y-10,4,8);ctx.fillRect(x+9,y-10,4,8);ctx.fillRect(x-13,y+5,4,8);ctx.fillRect(x+9,y+5,4,8);ctx.fillStyle='#ffd54a';ctx.fillRect(x-7,y-15,4,3);ctx.fillRect(x+3,y-15,4,3)}
+function drawPixelCar(x,y,player=false){ctx.fillStyle=player?CAR_COLORS[carColor]:'#35b8ff';ctx.fillRect(x-10,y-15,20,30);ctx.fillStyle=player?(carColor==='white'?'#dce3e8':CAR_COLORS[carColor]):'#8be0ff';ctx.fillRect(x-7,y-10,14,9);ctx.fillStyle='#101820';ctx.fillRect(x-6,y-7,12,5);ctx.fillStyle='#111';ctx.fillRect(x-13,y-10,4,8);ctx.fillRect(x+9,y-10,4,8);ctx.fillRect(x-13,y+5,4,8);ctx.fillRect(x+9,y+5,4,8);ctx.fillStyle='#ffd54a';ctx.fillRect(x-7,y-15,4,3);ctx.fillRect(x+3,y-15,4,3)}
 function drawRace(){const w=raceCanvas.width,h=raceCanvas.height;ctx.fillStyle='#0b2a18';ctx.fillRect(0,0,w,h);ctx.fillStyle='#164426';for(let y=0;y<h;y+=16){ctx.fillRect(0,y,72,8);ctx.fillRect(w-72,y,72,8)}ctx.fillStyle='#34383d';ctx.fillRect(72,0,w-144,h);ctx.fillStyle='#262b30';ctx.fillRect(82,0,6,h);ctx.fillRect(w-88,0,6,h);const stripe=Math.floor(race.laneOffset)%32;for(let y=-32+stripe;y<h;y+=32){ctx.fillStyle='#f5f7fa';ctx.fillRect(61,y,11,16);ctx.fillRect(w-72,y,11,16);ctx.fillStyle='#ff2638';ctx.fillRect(61,y+16,11,16);ctx.fillRect(w-72,y+16,11,16)}ctx.fillStyle='#d9dde0';for(let lane=1;lane<3;lane++){const x=72+lane*72;for(let y=-30+stripe;y<h;y+=42)ctx.fillRect(x-2,y,4,22)}for(const o of race.obstacles)drawPixelCar(o.x,o.y,false);drawPixelCar(race.x,h-72,true)}
 function spawnObstacle(){const lane=72+36+Math.floor(Math.random()*3)*72;race.obstacles.push({x:lane,y:-35})}
 function resetRace(){cancelAnimationFrame(race.raf);race.running=false;race.x=180;race.speed=0;race.distance=0;race.score=0;race.laneOffset=0;race.obstacles=[];race.spawn=0;document.getElementById('raceSpeed').textContent='SPEED 0';document.getElementById('raceDistance').textContent='DIST 0';document.getElementById('raceScore').textContent='0';document.getElementById('raceLap').textContent='LAP 1';document.getElementById('raceMsg').textContent='Нажми «СТАРТ ГОНКИ»';updateBest();drawRace()}
