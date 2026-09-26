@@ -1,0 +1,39 @@
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden}
+body{font:12px Arial;background:#080b12;color:#fff}
+.game{height:100dvh;max-width:520px;margin:auto;padding:8px 8px 62px;overflow:hidden}
+.header{height:28px}
+.balance{margin:5px 0;padding:7px}
+.money{font-size:25px}
+.stats{gap:5px;margin:5px 0}
+.stat{padding:6px}
+.stat-value{font-size:15px}
+.card{margin:5px 0;padding:9px}
+.title{font-size:16px}
+.subtitle{font-size:8px}
+.video-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.video{padding:6px}
+.video-name{font-size:10px}
+.video-desc{font-size:7px}
+.video button{padding:5px;font-size:7px}
+.tap{width:105px;height:105px;margin:7px auto}
+.play{font-size:30px}
+.message{height:20px;font-size:8px}
+.result{padding:5px;font-size:8px}
+.energy{margin:5px 0}
+.upgrade{padding:6px;margin:5px 0}
+.upgrade-info{font-size:7px}
+.upgrade-button{padding:6px;font-size:7px}
+.buttons{gap:5px;margin-top:5px}
+.page{height:calc(100dvh - 160px);overflow:hidden}
+.channel-stats,.profile-stats{gap:5px;margin-top:5px}
+.channel-stat,.profile-stat{padding:6px}
+.channel-stat b,.profile-stat b{font-size:12px}
+.income-box,.growth,.boost{margin-top:5px;padding:6px}
+.shop-item{padding:7px;margin-top:5px}
+.shop-name{font-size:9px}
+.shop-desc{font-size:7px}
+.shop-item button{padding:6px;font-size:7px}
+.bottom-nav{height:55px}
+.nav{padding:3px;font-size:8px}
+.nav i{font-size:16px}

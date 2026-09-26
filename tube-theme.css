@@ -1,0 +1,98 @@
+
+/* Tube Empire — Unified Premium HUD Design */
+:root{
+  --bg:#05070b;--panel:#10151c;--panel2:#171e27;--panel3:#202a35;
+  --line:#394552;--red:#ff2638;--red2:#ff5967;--green:#39e879;
+  --blue:#35b8ff;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg)!important;color:var(--text)!important;font-family:Arial,system-ui,sans-serif!important}
+body{padding:0!important;display:flex;justify-content:center;align-items:stretch;position:fixed;inset:0}
+.portal{
+ width:100%!important;height:100%!important;max-width:620px!important;max-height:none!important;
+ padding:9px 10px 12px!important;display:flex!important;flex-direction:column!important;
+ gap:7px;background:linear-gradient(180deg,#0b1016,#05070b)!important;
+ border:1px solid #35404d!important;border-radius:0!important;
+ box-shadow:inset 0 0 80px #000!important;text-align:left!important;
+ position:relative!important;overflow:hidden!important;
+}
+.portal:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#fff1 1px,transparent 1px),linear-gradient(90deg,#fff1 1px,transparent 1px);background-size:36px 36px}
+.game-ui-header{
+ position:relative;z-index:2;min-height:48px!important;padding:4px!important;
+ display:grid!important;grid-template-columns:auto 1fr!important;gap:8px!important;
+ align-items:center!important;background:linear-gradient(145deg,#171f28,#0e141a)!important;
+ border:1px solid var(--line)!important;border-radius:6px!important;
+ box-shadow:0 8px 18px #0008,inset 0 1px #fff1!important;
+}
+.game-ui-header > div:last-child{text-align:center!important;color:var(--text)!important;font-size:11px!important;font-weight:950!important;letter-spacing:.6px}
+.back-btn{
+ width:44px!important;height:40px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ background:linear-gradient(180deg,#252e37,#12181f)!important;border:1px solid #52606c!important;
+ color:#fff!important;border-radius:6px!important;text-decoration:none!important;font-size:0!important;font-weight:950!important;
+ box-shadow:0 4px 10px #0008,inset 0 1px #fff2!important;
+}
+.back-btn:before{content:"‹";font-size:24px;line-height:1;color:#f5f7fa}
+.page-menu-btn{
+ width:44px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(180deg,#252e37,#12181f);border:1px solid #52606c;
+ color:#fff;border-radius:6px;font-size:18px;font-weight:950;
+}
+.internal-nav{display:flex;gap:5px;align-items:center}
+.internal-nav .back-btn{width:44px!important}
+.internal-nav .page-menu-btn{width:44px}
+.tabs,.shop-tabs{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:6px!important;position:relative;z-index:2}
+.tab-btn,.shop-tab-btn{
+ min-height:40px!important;padding:7px!important;border:1px solid #3e4a56!important;border-radius:5px!important;
+ background:linear-gradient(145deg,#1d2630,#11171e)!important;color:#dbe1e6!important;
+ font-size:8px!important;font-weight:950!important;font-family:inherit!important;
+ box-shadow:inset 0 1px #fff1!important;
+}
+.tab-btn.active,.shop-tab-btn.active{background:linear-gradient(#ff394a,#c91627)!important;border-color:#ff5967!important;color:#fff!important}
+.preview-box,.collection-budget,.festive-title-box{
+ position:relative;z-index:2;background:linear-gradient(145deg,#171f28,#10161c)!important;
+ border:1px solid #394652!important;border-radius:5px!important;box-shadow:inset 0 1px #fff1!important;
+}
+.preview-box{padding:8px!important}
+.preview-screen{background:#0b1117!important;border:1px solid #65727e!important;border-radius:4px!important}
+.customizer-container,.luxury-grid,.corp-list,.leaderboard-list{
+ position:relative;z-index:2;min-height:0;overflow-y:auto!important;scrollbar-width:none;
+}
+.customizer-container::-webkit-scrollbar,.luxury-grid::-webkit-scrollbar,.corp-list::-webkit-scrollbar,.leaderboard-list::-webkit-scrollbar{display:none}
+.custom-row,.luxury-tile,.corp-card,.leader-card{
+ background:linear-gradient(145deg,#1a232c,#11171e)!important;border:1px solid #3d4a56!important;
+ border-radius:5px!important;box-shadow:inset 0 1px #fff1,0 5px 12px #0005!important;
+}
+.custom-row{padding:8px!important}
+.custom-ctrl-btn{
+ min-width:38px;min-height:36px;padding:5px 9px!important;border:1px solid #53616d!important;
+ border-radius:4px!important;background:#18212a!important;color:#fff!important;
+}
+.save-btn{
+ min-height:40px!important;margin-top:3px!important;border:1px solid #ff5967!important;border-radius:4px!important;
+ background:linear-gradient(#ff394a,#c91627)!important;color:#fff!important;font-size:9px!important;
+ box-shadow:0 5px 14px #ff263822!important;
+}
+.collection-budget{padding:8px!important}
+.luxury-grid{gap:7px!important;grid-template-columns:repeat(3,1fr)!important;grid-template-rows:none!important}
+.luxury-tile{min-height:78px!important}
+.tile-icon{font-size:25px!important}
+.tile-name{font-size:7px!important}
+.leaderboard-list{gap:6px!important;margin:2px 0!important}
+.leader-card{padding:9px 10px!important;font-size:9px!important}
+.leader-card.player-row{border-color:#ff2638!important;box-shadow:0 0 14px #ff263822!important}
+.rank-1{color:#ffd54a!important}.rank-2{color:#b8c1c9!important}.rank-3{color:#d69b72!important}
+.modal-overlay{background:#000c!important;backdrop-filter:blur(7px)!important}
+.modal-content{
+ background:linear-gradient(145deg,#1b232d,#0d1319)!important;border:1px solid #596673!important;
+ border-radius:6px!important;box-shadow:0 20px 50px #000!important;
+}
+.modal-content button,.corp-buy-btn{
+ min-height:38px!important;border-radius:4px!important;
+ background:linear-gradient(#ff394a,#c91627)!important;border:1px solid #ff5967!important;color:#fff!important;
+}
+@media(max-width:430px){
+ .portal{padding:7px 8px 9px!important}
+ .game-ui-header{min-height:44px!important}
+ .internal-nav .back-btn,.internal-nav .page-menu-btn,.back-btn,.page-menu-btn{width:44px!important;height:40px!important}
+ .luxury-grid{grid-template-columns:repeat(3,1fr)!important}
+}

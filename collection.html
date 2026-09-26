@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tube Empire — Магазин и Холдинг</title>
+<script src="core.js"></script>
+<style>
+:root, [data-theme="dark"] {
+  --portal-bg: rgba(20, 10, 10, 0.96);
+  --border-col: rgba(255, 0, 0, 0.5);
+  --accent-col: #ff0000;
+  --title-col: #ffcc00;
+  --btn-bg: rgba(40, 15, 15, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --success-col: #2ecc71;
+  --text-main: #fff;
+  --text-sub: #ff8888;
+  --body-bg: #0a0505;
+}
+[data-theme="rose"] {
+  --portal-bg: rgba(30, 10, 25, 0.96);
+  --border-col: rgba(233, 30, 99, 0.6);
+  --accent-col: #e91e63;
+  --title-col: #ffeb3b;
+  --btn-bg: rgba(60, 15, 40, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --success-col: #00e676;
+  --text-main: #fff;
+  --text-sub: #ff80ab;
+  --body-bg: #150510;
+}
+[data-theme="light"] {
+  --portal-bg: rgba(245, 247, 250, 0.96);
+  --border-col: rgba(211, 47, 47, 0.4);
+  --accent-col: #d32f2f;
+  --title-col: #e65100;
+  --btn-bg: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(230, 235, 245, 0.85);
+  --success-col: #2e7d32;
+  --text-main: #1a1a1a;
+  --text-sub: #555555;
+  --body-bg: #e0e4ec;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;width:100%;height:100%;background:var(--body-bg);color:var(--text-main);font-family:monospace;overflow:hidden;transition:background 0.3s;}
+body{padding:4px;display:flex;justify-content:center;align-items:center;position:fixed;inset:0;}
+.portal{
+  width: 100%; height: 100%; max-width: 420px; max-height: 100vh;
+  text-align: center; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 6px; z-index: 10; background: var(--portal-bg); border: 2px solid var(--border-col);
+  border-radius: 14px; box-shadow: 0 0 25px rgba(0, 0, 0, 0.2); position: relative;
+}
+.game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; width: 100%; flex-shrink: 0; font-size: 10.5px; }
+.back-btn { background: rgba(217, 30, 30, 0.85); border: 1px solid #ff4d4d; color: #fff; padding: 3px 5px; border-radius: 5px; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 8px; }
+.shop-tabs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; flex-shrink: 0; }
+.shop-tab-btn { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 6px; padding: 5px; font-size: 8.5px; color: var(--text-main); font-family: monospace; font-weight: bold; cursor: pointer; text-align: center; position: relative; }
+.shop-tab-btn.active { background: var(--accent-col); border-color: var(--title-col); color: #fff; }
+.mlbb-dot { position: absolute; top: 3px; right: 5px; width: 8px; height: 8px; background: #ff3b30; border-radius: 50%; box-shadow: 0 0 6px #ff3b30; display: none; }
+.collection-budget { background: var(--glass-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 4px; text-align: center; width: 100%; flex-shrink: 0; }
+.luxury-grid { flex-grow: 1; width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(5, 1fr); gap: 4px; overflow-y: auto; padding: 2px 0; }
+.luxury-tile { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px; cursor: pointer; position: relative; }
+.tile-icon { font-size: 22px; margin-bottom: 1px; }
+.tile-name { font-size: 7px; color: var(--text-main); font-weight: bold; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tile-cost { font-size: 6.5px; color: var(--title-col); font-weight: bold; margin-top: 1px; }
+.luxury-tile.owned { border-color: var(--success-col); background: rgba(46, 204, 113, 0.2); }
+.luxury-tile.owned .tile-cost { color: var(--success-col); }
+
+.corp-list { flex-grow: 1; width: 100%; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; padding: 2px 0; text-align: left; }
+.corp-card { background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.corp-card.owned { border-color: var(--success-col); background: rgba(46, 204, 113, 0.15); }
+.corp-info { display: flex; flex-direction: column; gap: 2px; }
+.corp-name { font-size: 9.5px; font-weight: bold; color: var(--title-col); }
+.corp-desc { font-size: 7px; color: var(--text-sub); }
+.corp-buy-btn { background: linear-gradient(135deg, var(--title-col), #c09a00); border: none; border-radius: 6px; padding: 5px 10px; font-weight: bold; font-size: 8.5px; color: #000; cursor: pointer; font-family: monospace; }
+.corp-buy-btn:disabled { opacity: 0.4; cursor: not-allowed; background: #555; color: #fff; }
+
+.modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-content { background: var(--portal-bg); border: 2px solid var(--title-col); border-radius: 12px; padding: 16px; text-align: center; width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 0 25px rgba(255,204,0,0.4); }
+</style>
+<link rel="stylesheet" href="tube-theme.css">
+</head>
+<body>
+
+<div class="portal">
+  <div class="game-ui-header">
+  <div class="internal-nav">
+    <a href="index.html" class="page-menu-btn" aria-label="Меню">⌂</a>
+  </div>
+  <div id="shopTitle">💎 МАГАЗИН И БИЗНЕС</div>
+</div>
+  </div>
+
+  <div class="shop-tabs">
+    <button class="shop-tab-btn active" onclick="switchTab('luxury')" id="tabLuxury">
+      💎 Предметы роскоши
+      <span class="mlbb-dot" id="dotLuxury"></span>
+    </button>
+    <button class="shop-tab-btn" onclick="switchTab('corp')" id="tabCorp">
+      🏢 Корпорации
+      <span class="mlbb-dot" id="dotCorp"></span>
+    </button>
+  </div>
+
+  <div class="collection-budget">
+    <div style="font-size: 7px; color: var(--text-sub); text-transform: uppercase;" id="budgetTitle">Доступный баланс (€)</div>
+    <div style="font-size: 14px; font-weight: bold; color: var(--title-col);" id="collectionMoneyVal">0.00 €</div>
+  </div>
+
+  <div class="luxury-grid" id="luxuryGrid" style="display: grid;"></div>
+  <div class="corp-list" id="corpList" style="display: none;"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div id="modalIcon" style="font-size: 40px;">📷</div>
+    <div id="modalTitle" style="font-size: 13px; font-weight: bold; color: var(--title-col);">Название</div>
+    <div id="modalDesc" style="font-size: 9px; color: var(--text-sub);">Описание</div>
+    <div id="modalCost" style="font-size: 11px; color: var(--title-col); font-weight: bold;">0 €</div>
+    <button class="back-btn" id="modalActionBtn" style="width:100%; padding:8px; background:linear-gradient(135deg,#ffcc00,#b38f00); color:#000; font-size:11px;" onclick="buyCurrentItem()">КУПИТЬ</button>
+    <button class="back-btn" id="modalCloseBtn" style="width:100%; padding:6px; background:#333;" onclick="closeModal()">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+<script>
+const langData = {
+  ru: {
+    menu: "⬅ СТУДИЯ", shop: "💎 МАГАЗИН И БИЗНЕС", buy: "КУПИТЬ", owned: "✔ ЕСТЬ", close: "ЗАКРЫТЬ", budget: "Доступный баланс (€)",
+    tabLux: "💎 Предметы роскоши", tabCorp: "🏢 Корпорации",
+    items: [
+      { name: "Кольцевая лампа", desc: "Базовый свет для влогов", icon: "💡" },
+      { name: "Микрофон Shure", desc: "Студийный звук голоса", icon: "🎙️" },
+      { name: "Камера 4K", desc: "Четкая картинка без шумов", icon: "📷" },
+      { name: "Стрим-ПК (RTX 4090)", desc: "Мощный сетап для игр", icon: "🖥️" },
+      { name: "Студия в Москве/Берлине", desc: "Собственное помещение", icon: "🏢" },
+      { name: "Электрокар Tesla", desc: "Быстрый транспорт для съемок", icon: "🏎️" },
+      { name: "Яхта для роликов", desc: "Контент прямо с моря", icon: "🛥️" },
+      { name: "Пентхаус блогера", desc: "Панорама на город", icon: "🌇" },
+      { name: "Частный джет", desc: "Перелеты на коллабы в США", icon: "✈️" },
+      { name: "Замок-студия", desc: "Эпические съемки в Европе", icon: "🏰" },
+      { name: "Остров для челленджей", desc: "100 человек на острове", icon: "🏝️" },
+      { name: "Киберспортивый клуб", desc: "Собственная eSports команда", icon: "🎮" },
+      { name: "Медиа-спутник", desc: "Связь со зрителями из космоса", icon: "🛰️" },
+      { name: "NFT Галерея", desc: "Цифровой арт-кабинет", icon: "🖼️" },
+      { name: "Мега-яхта", desc: "Плавучая съемочная база", icon: "🛳️" },
+      { name: "Небоскреб MCN", desc: "Штаб-квартира медиа-сети", icon: "🏙️" },
+      { name: "Билет в космос", desc: "Стрим с орбиты Земли", icon: "🚀" },
+      { name: "Эко-курорт", desc: "Отдых команды после съемок", icon: "🏖️" },
+      { name: "Пакет акций YouTube", desc: "Влияние на алгоритмы хостинга", icon: "📈" },
+      { name: "Золотая кнопка", desc: "Главный символ блогерской славы", icon: "🏆" }
+    ]
+  },
+  de: {
+    menu: "⬅ STUDIO", shop: "💎 SHOP & GESCHÄFT", buy: "KAUFEN", owned: "✔ BESITZ", close: "SCHLIESSEN", budget: "Guthaben (€)",
+    tabLux: "💎 Luxusgegenstände", tabCorp: "🏢 Konzerne",
+    items: [
+      { name: "Ringleuchte", desc: "Basis-Licht für Vlogs", icon: "💡" },
+      { name: "Studio-Mikro", desc: "Perfekter Sound", icon: "🎙️" },
+      { name: "4K Kamera", desc: "Kristallklares Bild", icon: "📷" },
+      { name: "Streaming-PC", desc: "High-End Setup", icon: "🖥️" },
+      { name: "Creator Studio", desc: "Eigener Arbeitsraum", icon: "🏢" },
+      { name: "Tesla Model S", desc: "Für Outdoor-Vlogs", icon: "🏎️" },
+      { name: "Creator Yacht", desc: "Insel-Vlogs am Meer", icon: "🛥️" },
+      { name: "Penthouse", desc: "Blick über die Stadt", icon: "🌇" },
+      { name: "Privatjet", desc: "Flug zu Collabs", icon: "✈️" },
+      { name: "Schloss-Studio", desc: "Epische Drehs in Europa", icon: "🏰" },
+      { name: "Challenge-Insel", desc: "100 Leute auf der Insel", icon: "🏝️" },
+      { name: "eSports Team", desc: "Eigenes Gaming-Team", icon: "🎮" },
+      { name: "Mediensatellit", desc: "Live-Stream aus dem All", icon: "🛰️" },
+      { name: "NFT Galerie", desc: "Digitaler Kunst-Raum", icon: "🖼️" },
+      { name: "Giga-Yacht", desc: "Schwimmende Basis", icon: "🛳️" },
+      { name: "MCN Wolkenkratzer", desc: "Hauptsitz des Netzwerks", icon: "🏙️" },
+      { name: "Weltraumflug", desc: "Stream aus dem Orbit", icon: "🚀" },
+      { name: "Luxus-Resort", desc: "Team-Wellness", icon: "🏖️" },
+      { name: "YouTube Aktien", desc: "Einfluss auf den Algorithmus", icon: "📈" },
+      { name: "Golden Play Button", desc: "Der Heilige Gral", icon: "🏆" }
+    ]
+  },
+  en: {
+    menu: "⬅ STUDIO", shop: "💎 SHOP & BUSINESS", buy: "BUY", owned: "✔ OWNED", close: "CLOSE", budget: "Available Balance (€)",
+    tabLux: "💎 Luxury Items", tabCorp: "🏢 Corporations",
+    items: [
+      { name: "Ring Light", desc: "Basic vlogging light", icon: "💡" },
+      { name: "Shure Mic", desc: "Studio voice sound", icon: "🎙️" },
+      { name: "4K Camera", desc: "Crystal clear picture", icon: "📷" },
+      { name: "Stream PC", desc: "High-end gaming setup", icon: "🖥️" },
+      { name: "Creator Studio", desc: "Own workspace", icon: "🏢" },
+      { name: "Tesla Model S", desc: "Fast transport for vlogs", icon: "🏎️" },
+      { name: "Creator Yacht", desc: "Content right from the sea", icon: "🛥️" },
+      { name: "Penthouse", desc: "City skyline view", icon: "🌇" },
+      { name: "Private Jet", desc: "Flights to US collabs", icon: "✈️" },
+      { name: "Castle Studio", desc: "Epic shoots in Europe", icon: "🏰" },
+      { name: "Challenge Island", desc: "100 people on an island", icon: "🏝️" },
+      { name: "eSports Club", desc: "Own eSports team", icon: "🎮" },
+      { name: "Media Satellite", desc: "Space streaming link", icon: "🛰️" },
+      { name: "NFT Gallery", desc: "Digital art showcase", icon: "🖼️" },
+      { name: "Mega Yacht", desc: "Floating production base", icon: "🛳️" },
+      { name: "MCN Skyscraper", desc: "Media network HQ", icon: "🏙️" },
+      { name: "Space Ticket", desc: "Orbit livestream", icon: "🚀" },
+      { name: "Eco Resort", desc: "Post-production wellness", icon: "🏖️" },
+      { name: "YouTube Shares", desc: "Algorithm influence", icon: "📈" },
+      { name: "Golden Button", desc: "Ultimate creator glory", icon: "🏆" }
+    ]
+  }
+};
+
+let luxuryItems = Array.from({length: 20}, (_, i) => ({
+  id: `lux_${i+1}`,
+  cost: [1500, 7500, 25000, 85000, 250000, 750000, 2000000, 5500000, 14000000, 35000000, 85000000, 200000000, 450000000, 1000000000, 2200000000, 4800000000, 10000000000, 22000000000, 50000000000, 120000000000][i],
+  owned: localStorage.getItem(`lux_${i+1}`) === "true"
+}));
+
+let selectedIndex = null;
+let currentTab = 'luxury';
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tabLuxury').classList.toggle('active', tab === 'luxury');
+  document.getElementById('tabCorp').classList.toggle('active', tab === 'corp');
+  document.getElementById('luxuryGrid').style.display = tab === 'luxury' ? 'grid' : 'none';
+  document.getElementById('corpList').style.display = tab === 'corp' ? 'flex' : 'none';
+  updateCollectionUI();
+}
+
+function openModal(index) {
+  selectedIndex = index;
+  let item = luxuryItems[index], lang = Core.getLang(), t = langData[lang] || langData.ru, localized = t.items[index];
+  
+  document.getElementById('modalIcon').textContent = localized.icon;
+  document.getElementById('modalTitle').textContent = localized.name;
+  document.getElementById('modalDesc').textContent = localized.desc;
+  document.getElementById('modalCost').textContent = item.owned ? t.owned : `${item.cost.toLocaleString()} €`;
+  
+  let btn = document.getElementById('modalActionBtn');
+  btn.textContent = t.buy;
+  btn.style.display = item.owned ? 'none' : 'block';
+  document.getElementById('modalCloseBtn').textContent = t.close;
+  
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function closeModal() { 
+  document.getElementById('modalOverlay').classList.remove('active'); 
+  selectedIndex = null; 
+}
+
+function buyCurrentItem() {
+  if (selectedIndex === null) return;
+  let item = luxuryItems[selectedIndex];
+  if (item.owned || !Core.spendMoney(item.cost)) return;
+  item.owned = true;
+  localStorage.setItem(item.id, "true");
+  Core.playSound(880, 'square', 0.2);
+  Core.haptic('heavy');
+  closeModal(); 
+  updateCollectionUI();
+}
+
+function buyCorpAsset(id) {
+  if (Core.buyCorporationAsset(id)) {
+    Core.playSound(880, 'square', 0.25);
+    Core.haptic('heavy');
+    updateCollectionUI();
+  } else {
+    Core.playSound(150, 'sawtooth', 0.15);
+  }
+}
+
+function updateCollectionUI() {
+  let lang = Core.getLang(), t = langData[lang] || langData.ru, money = Core.getMoney();
+  
+  const setTxt = (id, val) => { let el = document.getElementById(id); if(el) el.textContent = val; };
+
+  setTxt('menuBtnTxt', t.menu);
+  setTxt('shopTitle', t.shop);
+  setTxt('budgetTitle', t.budget);
+  setTxt('tabLuxury', t.tabLux);
+  setTxt('tabCorp', t.tabCorp);
+  setTxt('collectionMoneyVal', money.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " €");
+
+  let gridHtml = "";
+  luxuryItems.forEach((item, idx) => {
+    let localized = t.items[idx], canBuy = money >= item.cost;
+    gridHtml += `
+      <div class="luxury-tile ${item.owned ? 'owned' : ''}" onclick="openModal(${idx})" style="opacity: ${item.owned || canBuy ? 1 : 0.55};">
+        <div class="tile-icon">${localized.icon}</div>
+        <div class="tile-name">${localized.name}</div>
+        <div class="tile-cost">${item.owned ? '✔' : (item.cost >= 1e9 ? (item.cost/1e9).toFixed(0)+'B' : (item.cost/1e6).toFixed(0)+'M')}</div>
+      </div>
+    `;
+  });
+  let gridEl = document.getElementById('luxuryGrid');
+  if(gridEl) gridEl.innerHTML = gridHtml;
+
+  let corpAssets = Core.getCorporationAssets();
+  let corpHtml = "";
+  corpAssets.forEach(asset => {
+    let isOwned = Core.isAssetOwned(asset.id);
+    let canBuy = money >= asset.cost;
+    let assetName = asset.name[lang] || asset.name.ru;
+    corpHtml += `
+      <div class="corp-card ${isOwned ? 'owned' : ''}">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="font-size:24px;">${asset.icon}</div>
+          <div class="corp-info">
+            <div class="corp-name">${assetName}</div>
+            <div class="corp-desc">Доход: +${asset.incomePerSec.toLocaleString()} €/сек</div>
+            <div style="font-size:7px; color:var(--accent-col); font-weight:bold;">Цена: ${asset.cost.toLocaleString()} €</div>
+          </div>
+        </div>
+        <button class="corp-buy-btn" ${isOwned || !canBuy ? 'disabled' : ''} onclick="buyCorpAsset('${asset.id}')">
+          ${isOwned ? t.owned : t.buy}
+        </button>
+      </div>
+    `;
+  });
+  let corpEl = document.getElementById('corpList');
+  if(corpEl) corpEl.innerHTML = corpHtml;
+
+  // MLBB Красные точки уведомлений
+  let canBuyLuxury = luxuryItems.some(item => !item.owned && money >= item.cost);
+  let canBuyCorp = corpAssets.some(asset => !Core.isAssetOwned(asset.id) && money >= asset.cost);
+  
+  let dotLux = document.getElementById('dotLuxury');
+  let dotCorp = document.getElementById('dotCorp');
+  if(dotLux) dotLux.style.display = canBuyLuxury ? 'block' : 'none';
+  if(dotCorp) dotCorp.style.display = canBuyCorp ? 'block' : 'none';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateCollectionUI();
+});
+</script>
+</body>
+</html>
