@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tube Empire</title>
+
+
+<style>
+:root{
+  --bg:#05070b;--panel:#10151c;--panel2:#171e27;--panel3:#202a35;
+  --line:#394552;--red:#ff2638;--red2:#ff5967;--green:#39e879;
+  --blue:#35b8ff;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:12px Arial,sans-serif}
+body{display:flex;justify-content:center}
+button{font-family:inherit;color:var(--text);cursor:pointer}
+button:disabled{cursor:default}
+
+.game{
+ width:100%;max-width:620px;height:100dvh;position:relative;overflow:hidden;
+ padding:0 12px 78px;display:flex;flex-direction:column;
+ background:
+ radial-gradient(ellipse at 50% -15%,#303a45 0,#111720 32%,transparent 58%),
+ linear-gradient(180deg,#0b0f14 0,#05070b 100%);
+}
+.game:before{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.25;
+ background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+ background-size:36px 36px;
+}
+.game:after{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ box-shadow:inset 0 0 100px #000;
+}
+
+.header{
+ position:relative;z-index:3;height:55px;flex:none;display:grid;
+ grid-template-columns:1fr auto;align-items:center;border-bottom:1px solid #252e38;
+}
+.logo{font-size:18px;font-weight:950;letter-spacing:1px;text-shadow:0 2px 10px #000}
+.logo:before{content:"";display:inline-block;width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red)}
+.header-buttons{display:flex;gap:6px}
+.header-btn{
+ border:1px solid var(--line);background:linear-gradient(#1b232c,#10151b);
+ border-radius:6px;padding:8px 10px;font-size:8px;font-weight:900;
+ box-shadow:inset 0 1px rgba(255,255,255,.08),0 4px 12px #0006;
+}
+
+.balance{
+ position:relative;z-index:2;height:82px;flex:none;margin:10px 0 8px;
+ padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
+ text-align:left;background:linear-gradient(105deg,#121920,#0d1218);
+ border:1px solid var(--line);border-radius:7px;
+ box-shadow:0 12px 28px #0008,inset 0 1px rgba(255,255,255,.06);
+}
+.balance:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);box-shadow:0 0 14px #ff263855}
+.balance .label{font-size:8px;color:var(--muted);letter-spacing:2px;font-weight:900}
+.money{font-size:29px;font-weight:950;color:var(--green);text-shadow:0 0 16px #39e87922}
+
+.stats{position:relative;z-index:2;height:61px;flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{
+ padding:9px 11px;background:linear-gradient(145deg,#171e27,#0e141a);
+ border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;
+}
+.stat:after{content:"";position:absolute;right:-20px;bottom:-24px;width:70px;height:70px;border-radius:50%;background:#ff263808}
+.stat-title{font-size:7px;color:var(--muted);letter-spacing:1.3px;font-weight:900}
+.stat-value{font-size:19px;font-weight:950;margin-top:5px}
+
+.page{display:none;flex:1;min-height:0;overflow:hidden;position:relative;z-index:2}
+.page.active{display:flex;flex-direction:column}
+
+.card{
+ margin-top:9px;padding:12px;min-height:0;overflow:hidden;
+ background:linear-gradient(145deg,rgba(24,31,40,.98),rgba(10,14,19,.98));
+ border:1px solid var(--line);border-radius:7px;
+ box-shadow:0 16px 35px #0009,inset 0 1px rgba(255,255,255,.055);
+}
+.title{font-size:18px;font-weight:950;letter-spacing:.5px}
+.subtitle{font-size:8px;color:var(--muted);margin-top:3px}
+
+.video-list{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.video{
+ position:relative;min-height:92px;padding:9px;
+ display:flex;flex-direction:column;justify-content:space-between;
+ background:linear-gradient(150deg,#222c36 0,#141b23 48%,#0e141a 100%);
+ border:1px solid #44515e;border-radius:6px;
+ box-shadow:inset 0 1px #ffffff10,0 6px 14px #0006;
+}
+.video:before{
+ content:"";position:absolute;top:0;left:0;right:0;height:3px;
+ background:linear-gradient(90deg,var(--red),#ff263800);
+}
+.video-name{font-size:11px;font-weight:950;letter-spacing:.3px}
+.video-desc{font-size:7px;color:#9ba6b3;margin-top:3px}
+.video button{
+ width:100%;margin-top:7px;padding:7px;border-radius:4px;
+ border:1px solid var(--red2);background:linear-gradient(#ff3b4b,#d71929);
+ font-size:7px;font-weight:950;letter-spacing:.4px;
+ box-shadow:0 4px 12px #ff263822,inset 0 1px #fff3;
+}
+.video button:hover{filter:brightness(1.1)}
+
+.tap{
+ width:112px;height:112px;flex:none;margin:10px auto 4px;
+ border:1px solid #5b6874;border-radius:50%;display:flex;align-items:center;justify-content:center;
+ background:radial-gradient(circle at 35% 30%,#303c48,#121820 68%,#0b1016);
+ box-shadow:0 0 0 5px #10161d,0 0 0 6px #38444f,0 12px 28px #000;
+ position:relative;
+}
+.tap:after{content:"";position:absolute;inset:10px;border-radius:50%;border:1px solid #ff263844}
+.play{font-size:30px;text-shadow:0 0 15px #fff5}
+.tap-text{font-size:8px;font-weight:950;line-height:1.35;text-align:center}
+.message{height:20px;text-align:center;color:var(--blue);font-size:8px;font-weight:800}
+.result{
+ height:35px;padding:8px;text-align:center;background:#0c1218;border:1px solid #303b46;
+ border-radius:4px;color:#aeb8c3;font-size:7px;
+}
+
+.energy{margin-top:7px}
+.energy-head{display:flex;justify-content:space-between;color:var(--muted);font-size:7px;margin-bottom:4px;font-weight:800}
+.energy-bar,.progress-bar{height:7px;background:#05070a;border:1px solid #2a333d;border-radius:2px;overflow:hidden}
+.energy-fill{height:100%;background:linear-gradient(90deg,#35b8ff,#ff2638);box-shadow:0 0 8px #35b8ff44}
+.progress-fill{height:100%;background:linear-gradient(90deg,#ff2638,#ff5967);box-shadow:0 0 8px #ff263844}
+
+.upgrade{
+ display:flex;gap:8px;align-items:center;margin-top:7px;padding:8px;
+ background:linear-gradient(90deg,#171f28,#10161c);
+ border:1px solid #394652;border-radius:5px;
+}
+.upgrade-info{flex:1;font-size:7px;color:var(--muted)}
+.upgrade-title{font-size:9px;font-weight:950;color:var(--text)}
+.upgrade-button{
+ border:1px solid var(--red2);background:linear-gradient(#ff394a,#c91627);
+ border-radius:4px;font-size:7px;font-weight:950;padding:7px 9px;
+}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
+.buttons button{
+ border:1px solid #46525e;background:linear-gradient(#1d2630,#11171e);
+ border-radius:4px;font-size:7px;font-weight:950;padding:8px;
+}
+.buttons .bonus{border-color:#3f4b57}
+
+.channel-head,.profile-head{display:flex;align-items:center;gap:10px}
+.avatar,.profile-avatar{
+ width:54px;height:54px;flex:none;border-radius:5px;
+ display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(145deg,#303b46,#121820);
+ border:1px solid #5b6875;font-size:23px;
+ box-shadow:inset 0 1px #fff1,0 8px 20px #0008;
+}
+.channel-name,.profile-name{font-size:16px;font-weight:950}
+.channel-level,.profile-level{font-size:8px;color:var(--muted);margin-top:3px}
+.level-badge{
+ display:inline-block;margin-top:5px;padding:3px 7px;border-radius:3px;
+ background:#18222c;border:1px solid #3b4854;color:var(--red2);
+ font-size:7px;font-weight:950;
+}
+.progress{margin-top:9px}
+.channel-stats,.profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.channel-stat,.profile-stat{
+ padding:8px;background:#121920;border:1px solid #34414d;border-radius:5px;
+}
+.channel-stat small,.profile-stat small{font-size:6px;color:#7f8b99;font-weight:900}
+.channel-stat b,.profile-stat b{display:block;font-size:13px;margin-top:4px}
+.income-box,.boost,.achievement{
+ margin-top:7px;padding:8px;background:#111820;border:1px solid #34414d;border-radius:5px;font-size:7px;
+}
+.income-row{display:flex;justify-content:space-between;margin:3px}
+.income-value{color:var(--green);font-weight:900}
+.history-title{font-size:10px;font-weight:950;margin:9px 0 5px}
+.history-list{display:grid;gap:4px}
+.history-item{
+ display:grid;grid-template-columns:27px 1fr auto;align-items:center;gap:6px;
+ padding:6px;background:#121920;border:1px solid #303c48;border-radius:4px;
+}
+.history-icon{font-size:14px}.history-name{font-size:7px;font-weight:900}.history-info{font-size:6px;color:#7f8b99}
+.history-money{font-size:7px;color:var(--green);font-weight:900}
+.empty{text-align:center;color:#778390;padding:9px;font-size:7px}
+.channel-action{
+ width:100%;margin-top:7px;padding:8px;border-radius:4px;
+ border:1px solid var(--red2);background:linear-gradient(#ff394a,#c91627);
+ font-size:7px;font-weight:950;
+}
+
+.shop-item{
+ display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px;margin-top:7px;
+ background:linear-gradient(90deg,#18212a,#10161c);border:1px solid #394651;border-radius:5px;
+}
+.shop-info{flex:1}.shop-name{font-size:10px;font-weight:950}.shop-desc{font-size:7px;color:var(--muted);margin-top:3px}
+.shop-item button{font-size:7px;padding:7px 9px;min-width:72px;border:1px solid #46525e;background:#161e26;border-radius:4px}
+
+.achievement{position:relative}.achievement.locked{opacity:.38}.achievement.done{border-color:#39e87966}.achievement b{font-size:8px}.achievement span{display:block;color:#7f8b99;font-size:6px;margin-top:2px}.achievement .check{position:absolute;right:7px;top:6px;color:var(--green);font-size:11px}
+
+.bottom-nav{
+ position:absolute;z-index:10;bottom:0;left:0;width:100%;height:67px;padding:7px 6px;
+ display:grid;grid-template-columns:repeat(4,1fr);gap:5px;
+ background:linear-gradient(180deg,#0b1015f5,#05070bf8);
+ border-top:1px solid #34404b;
+ box-shadow:0 -12px 30px #0009;
+}
+.nav{
+ padding:3px;border:1px solid transparent;border-radius:4px;
+ background:transparent;color:#687582;font-size:7px;font-weight:900;
+}
+.nav.active{
+ color:#fff;background:linear-gradient(#1d2731,#111820);
+ border-color:#ff2638;box-shadow:inset 0 1px #fff1,0 0 12px #ff26381a;
+}
+.nav i{display:block;font-style:normal;font-size:17px;margin-bottom:3px}
+
+@media(max-height:650px){
+ .game{padding-bottom:72px}.balance{height:68px;margin:6px 0}.stats{height:52px}
+ .video{min-height:80px;padding:7px}.video-list{gap:6px}
+ .tap{width:86px;height:86px;margin-top:5px}.play{font-size:24px}
+ .card{padding:9px}
+}
+
+/* ===== STUDIO 9:16 HERO LAYOUT ===== */
+.studio-screen{
+  height:100%;min-height:0;display:flex;flex-direction:column;gap:7px;
+}
+.studio-top{
+  height:48px;flex:none;display:grid;grid-template-columns:94px 1fr 70px;
+  align-items:center;gap:8px;
+}
+.studio-back{
+  height:40px;padding:0 10px;border:1px solid #5a6672;border-radius:5px;
+  background:linear-gradient(180deg,#252e37,#12181f);font-size:9px;font-weight:950;
+  box-shadow:0 5px 12px #0008,inset 0 1px #fff2;
+}
+.studio-back:first-letter{font-size:24px;color:#ff2638}
+.studio-heading{text-align:center;min-width:0}
+.studio-kicker{font-size:5px;letter-spacing:2px;color:#697582;font-weight:900;margin-bottom:2px}
+.studio-heading .title{font-size:15px;line-height:16px}
+.studio-heading .subtitle{font-size:6px;margin-top:1px}
+.studio-status{font-size:6px;color:#7f8b97;text-align:right;font-weight:900}
+.studio-status span{display:inline-block;width:5px;height:5px;border-radius:50%;background:#39e879;box-shadow:0 0 8px #39e879;margin-right:3px}
+
+.studio-center{
+  flex:1;min-height:0;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:9px;align-items:stretch;
+}
+.publication-column,.action-column{
+  min-width:0;display:flex;flex-direction:column;justify-content:center;gap:7px;
+}
+.column-label{
+  height:14px;flex:none;font-size:6px;color:#697582;letter-spacing:1.5px;font-weight:950;
+  border-bottom:1px solid #303a44;padding-left:3px;
+}
+.video-card{
+  min-height:0;height:62px;display:grid;grid-template-columns:25px 1fr;grid-template-rows:1fr 19px;
+  column-gap:5px;padding:7px;border-radius:5px;
+  background:linear-gradient(145deg,#202a34,#11171e);
+  border:1px solid #46535f;box-shadow:0 7px 14px #0008,inset 0 1px #fff2;
+}
+.video-card:before{height:2px}
+.video-icon{grid-row:1/2;font-size:18px;display:flex;align-items:center;justify-content:center}
+.video-copy{min-width:0;align-self:center}
+.video-card .video-name{font-size:8px;white-space:nowrap}
+.video-card .video-desc{font-size:5.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.video-card button{
+  grid-column:1/3;grid-row:2;height:19px;margin:0;padding:2px;font-size:5.5px;border-radius:3px;
+}
+
+.hero-panel{
+  min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:stretch;
+}
+.hero-frame{
+  position:relative;flex:1;min-height:0;max-height:310px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;border:1px solid #56636e;border-radius:6px;
+  background:
+    radial-gradient(circle at 50% 42%,#343e49 0,#1a222b 30%,#0c1218 72%),
+    #10161c;
+  box-shadow:0 14px 30px #000a,inset 0 1px #fff2;
+}
+.hero-frame:before{
+  content:"";position:absolute;inset:8px;border:1px solid #68747f33;border-radius:4px;
+}
+.hero-grid{
+  position:absolute;inset:0;opacity:.24;
+  background-image:linear-gradient(#ffffff12 1px,transparent 1px),linear-gradient(90deg,#ffffff12 1px,transparent 1px);
+  background-size:24px 24px;
+  transform:perspective(350px) rotateX(8deg) scale(1.2);
+}
+.hero-corner{position:absolute;width:13px;height:13px;border-color:#ff2638;border-style:solid}
+.hero-corner.c1{left:8px;top:8px;border-width:2px 0 0 2px}.hero-corner.c2{right:8px;top:8px;border-width:2px 2px 0 0}
+.hero-corner.c3{left:8px;bottom:8px;border-width:0 0 2px 2px}.hero-corner.c4{right:8px;bottom:8px;border-width:0 2px 2px 0}
+.hero-label{position:absolute;top:15px;font-size:5px;letter-spacing:2px;color:#8c98a3;font-weight:900}
+.hero-avatar{
+  position:relative;z-index:1;width:82px;height:82px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:35px;
+  background:radial-gradient(circle at 35% 30%,#4a5662,#151d25 68%);
+  border:2px solid #737f89;box-shadow:0 0 0 5px #0c1218,0 0 0 6px #4a566233,0 12px 30px #000;
+}
+.hero-name{
+  position:relative;z-index:1;margin-top:10px;text-align:center;font-size:14px;line-height:13px;
+  font-weight:700;letter-spacing:2px;color:#c5ccd3;
+}
+.hero-name strong{font-size:19px;color:#fff;letter-spacing:3px}
+.hero-line{position:relative;z-index:1;width:55px;height:2px;background:#ff2638;box-shadow:0 0 10px #ff263855;margin:8px 0}
+.hero-meta{position:relative;z-index:1;font-size:6px;color:#7e8994;letter-spacing:1px}
+.hero-meta b{color:#ff5967;font-size:8px;margin-left:3px}
+.hero-result{
+  flex:none;height:29px;margin-top:6px;padding:7px 4px;text-align:center;
+  border:1px solid #303c47;background:#0c1218;border-radius:4px;color:#9da8b3;font-size:6px;
+}
+.action-column{align-items:stretch}
+.quick-ring{
+  align-self:center;width:116px;height:116px;flex:none;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid #67747f;background:radial-gradient(circle,#2c3741 0,#131a21 66%,#0a0f14 100%);
+  box-shadow:0 0 0 6px #10161d,0 0 0 7px #3b4752,0 14px 30px #000;
+}
+.quick-ring:hover{border-color:#ff5967;box-shadow:0 0 0 6px #10161d,0 0 0 7px #ff263866,0 0 22px #ff263833}
+.ring-inner{
+  width:86px;height:86px;border-radius:50%;border:1px solid #ff263855;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle,#29333d,#0e141a);
+}
+.ring-inner .play{font-size:24px;color:#ff5967;line-height:22px}
+.ring-inner .tap-text{font-size:6px;line-height:1.3;margin-top:5px}
+.energy-module{margin-top:3px;padding:7px;border:1px solid #35414d;background:#111820;border-radius:4px}
+.energy-module .energy-head{font-size:6px;margin-bottom:3px}
+.energy-module .energy-bar{height:6px}
+.action-column .upgrade{margin-top:0}
+.action-column .upgrade-button{font-size:6px;padding:6px}
+
+.studio-bottom{
+  height:36px;flex:none;display:grid;grid-template-columns:1fr 1fr 92px;gap:6px;
+}
+.mini-stat,.bottom-action{
+  min-width:0;border:1px solid #35414d;border-radius:4px;background:#111820;
+}
+.mini-stat{padding:5px 7px;display:flex;align-items:center;justify-content:space-between}
+.mini-stat span{font-size:5px;color:#717d89;font-weight:900;letter-spacing:.8px}
+.mini-stat b{font-size:9px}
+.bottom-action{font-size:6px;font-weight:950;padding:4px}
+.bottom-action.bonus{color:#f5f7fa}
+
+@media(max-width:430px){
+  .game{padding-left:8px;padding-right:8px}
+  .studio-center{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+  .video-card{height:58px;padding:6px}
+  .video-card .video-name{font-size:7px}.video-card .video-desc{font-size:5px}
+  .video-card button{font-size:5px}
+  .quick-ring{width:96px;height:96px}.ring-inner{width:72px;height:72px}
+  .hero-avatar{width:68px;height:68px;font-size:29px}.hero-name{font-size:11px}.hero-name strong{font-size:15px}
+  .studio-top{grid-template-columns:78px 1fr 54px}
+  .studio-back{font-size:7px;padding:0 6px}
+  .studio-bottom{grid-template-columns:1fr 1fr 78px}
+}
+@media(max-height:700px){
+  .header{height:45px}.balance{height:62px;margin:5px 0}.stats{height:47px}
+  .studio-top{height:40px}.studio-back{height:34px}
+  .video-card{height:55px}.hero-frame{max-height:none}
+  .quick-ring{width:90px;height:90px}.ring-inner{width:68px;height:68px}
+  .hero-avatar{width:64px;height:64px;font-size:27px}
+  .studio-bottom{height:31px}
+}
+
+<style>
+.hero-panel,.hero-frame,.hero-grid,.hero-corner,.hero-label,.hero-avatar,.hero-name,.hero-line,.hero-meta{display:none!important}
+.studio-feedback{margin-top:1px}
+.studio-feedback .hero-result{height:29px;margin-top:0}
+.studio-feedback .message{height:18px;padding-top:3px}
+.action-column{justify-content:center}
+
+<style>
+.header-btn{display:none!important}
+</style>
+</style>
+</style>
+</style>
+
+
+
+<style>
+/* Clean central hero panel */
+.hero-frame{
+  background:
+    radial-gradient(circle at 50% 50%,#27323d 0,#151d25 38%,#0b1117 78%);
+}
+.hero-frame:after{
+  content:"STUDIO";
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  font-size:9px;
+  letter-spacing:4px;
+  color:#64717d;
+  font-weight:950;
+  opacity:.42;
+}
+</style>
+
+<style>
+/* Compact paired navigation controls */
+.studio-top{
+  grid-template-columns:auto 1fr auto;
+  gap:8px;
+}
+.studio-nav-pair{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+.studio-nav-pair .studio-back,
+.studio-nav-pair .studio-menu{
+  width:44px;
+  height:40px;
+  min-width:44px;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #4c5965;
+  border-radius:6px;
+  background:linear-gradient(180deg,#252e37,#12181f);
+  box-shadow:0 4px 10px #0008,inset 0 1px #fff2;
+  font-size:0;
+}
+.studio-nav-pair .studio-back{
+  font-size:22px;
+  line-height:1;
+  color:#f5f7fa;
+}
+.studio-nav-pair .studio-menu{
+  font-size:17px;
+  line-height:1;
+  color:#f5f7fa;
+}
+.studio-nav-pair .studio-back:active,
+.studio-nav-pair .studio-menu:active{
+  transform:scale(.96);
+  border-color:#ff2638;
+}
+@media(max-width:430px){
+  .studio-nav-pair{gap:4px}
+  .studio-nav-pair .studio-back,
+  .studio-nav-pair .studio-menu{
+    width:44px;height:40px;min-width:44px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="game">
+<div class="header">
+<div class="logo">TUBE <span style="color:var(--red)">EMPIRE</span><div style="font-size:6px;color:var(--muted);margin-top:2px">PLAYER · LV <b id="hudLevel">1</b> <span style="display:inline-block;width:45px;height:3px;background:#202932;border-radius:3px;vertical-align:middle"><i id="hudXp" style="display:block;width:0;height:100%;background:var(--red)"></i></span></div></div>
+<div><div id="hudMoney" style="font-weight:1000;color:var(--green);font-size:10px">🪙 0</div><div class="online">● ONLINE</div></div>
+</div>
+
+<div class="balance"><div class="label" data-i18n="balance">БАЛАНС</div><div class="money" id="money">0.00 🪙</div></div>
+
+<div class="stats">
+<div class="stat"><div class="stat-title" data-i18n="views">ПРОСМОТРЫ</div><div class="stat-value" id="views">0</div></div>
+<div class="stat"><div class="stat-title" data-i18n="subs">ПОДПИСЧИКИ</div><div class="stat-value" id="topSubs">0</div></div>
+</div>
+
+<div class="page active" id="studio">
+<div class="studio-screen">
+
+  <div class="studio-top">
+    <div class="studio-nav-pair">
+      <button class="studio-menu" onclick="goHome()" aria-label="Меню">⌂</button>
+    </div>
+    <div class="studio-heading">
+      <div class="studio-kicker">TUBE EMPIRE / CREATOR STUDIO</div>
+      <div class="title">🎬 <span data-i18n="studio">СТУДИЯ</span></div>
+      <div class="subtitle" data-i18n="studioDesc">Создай и опубликуй контент</div>
+    </div>
+    <div class="studio-status"><span></span> ONLINE</div>
+  </div>
+
+  <div class="studio-center">
+
+    <div class="publication-column">
+      <div class="video video-card">
+        <div class="video-icon">🎮</div>
+        <div class="video-copy">
+          <div class="video-name"><span data-i18n="gaming">GAMING</span></div>
+          <div class="video-desc" data-i18n="gamingDesc">Стабильный контент</div>
+        </div>
+        <button onclick="publish('gaming')" data-i18n="publish">ОПУБЛИКОВАТЬ</button>
+      </div>
+
+      <div class="video video-card">
+        <div class="video-icon">🎬</div>
+        <div class="video-copy">
+          <div class="video-name"><span data-i18n="vlog">ВЛОГ</span></div>
+          <div class="video-desc" data-i18n="vlogDesc">Больше подписчиков</div>
+        </div>
+        <button onclick="publish('vlog')" data-i18n="publish">ОПУБЛИКОВАТЬ</button>
+      </div>
+
+      <div class="video video-card">
+        <div class="video-icon">🔥</div>
+        <div class="video-copy">
+          <div class="video-name"><span data-i18n="challenge">ЧЕЛЛЕНДЖ</span></div>
+          <div class="video-desc" data-i18n="challengeDesc">Высокий потенциал</div>
+        </div>
+        <button onclick="publish('challenge')" data-i18n="publish">ОПУБЛИКОВАТЬ</button>
+      </div>
+
+      <div class="video video-card">
+        <div class="video-icon">💎</div>
+        <div class="video-copy">
+          <div class="video-name"><span data-i18n="premium">ПРЕМИУМ</span></div>
+          <div class="video-desc" data-i18n="premiumDesc">Максимальный потенциал</div>
+        </div>
+        <button onclick="publish('premium')" data-i18n="publish">ОПУБЛИКОВАТЬ</button>
+      </div>
+    </div>
+
+    <div class="action-column">
+      <div class="quick-ring" id="tap">
+        <div class="ring-inner">
+          <div class="play">▶</div>
+          <div class="tap-text" data-i18n="quick">БЫСТРАЯ<br>ПУБЛИКАЦИЯ</div>
+        </div>
+      </div>
+
+      <div class="energy-module">
+        <div class="energy-head">
+          <span data-i18n="energy">Энергия</span>
+          <span id="energyText">100 / 100</span>
+        </div>
+        <div class="energy-bar"><div class="energy-fill" id="energy"></div></div>
+      </div>
+
+      <div class="upgrade">
+        <div class="upgrade-info">
+          <div class="upgrade-title">🚀 <span data-i18n="studio">СТУДИЯ</span></div>
+          <span id="upgradeInfo"></span>
+        </div>
+        <button class="upgrade-button" id="upgrade"></button>
+      </div>
+      <div class="studio-feedback">
+        <div class="hero-result" id="result" data-i18n="result">📊 Результат появится после публикации</div>
+        <div class="message" id="message" data-i18n="chooseVideo">Выбери тип видео</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="studio-bottom">
+    <div class="mini-stat"><span>VIEWS</span><b id="studioViewsMini">0</b></div>
+    <div class="mini-stat"><span>SUBSCRIBERS</span><b id="studioSubsMini">0</b></div>
+    <button class="bottom-action bonus" id="bonus">🎁 +100 🪙</button>
+  </div>
+
+</div>
+</div>
+
+<div class="page" id="channel"><div class="card">
+<div class="channel-head"><div class="avatar">▶</div><div><div class="channel-name" id="channelName">TUBE CHANNEL</div><div class="channel-level" id="channelLevel">УРОВЕНЬ 1</div><div class="level-badge" id="channelRank">НОВИЧОК</div></div></div>
+<div class="progress"><div class="energy-head"><span data-i18n="channelXP">Опыт канала</span><span id="xpText">0 / 100 XP</span></div><div class="progress-bar"><div class="progress-fill" id="xp"></div></div></div>
+<div class="channel-stats">
+<div class="channel-stat"><small>👥 <span data-i18n="subs">ПОДПИСЧИКИ</span></small><b id="subs">0</b></div>
+<div class="channel-stat"><small>👀 <span data-i18n="views">ПРОСМОТРЫ</span></small><b id="channelViews">0</b></div>
+<div class="channel-stat"><small>💰 <span data-i18n="earned">ЗАРАБОТАНО</span></small><b id="earned">0 €</b></div>
+<div class="channel-stat"><small>🏢 <span data-i18n="studioLevel">СТУДИЯ</span></small><b id="studioLevel">1</b></div>
+</div>
+<div class="income-box">
+<div class="income-row"><span>💰 <span data-i18n="incomeSec">Доход/сек</span></span><span class="income-value" id="incomeSec">0 🪙</span></div>
+<div class="income-row"><span>👥 <span data-i18n="subIncome">Подписчики</span></span><span class="income-value" id="subIncome">0 🪙</span></div>
+<div class="income-row"><span>🔥 <span data-i18n="bonus">Бонус</span></span><span class="income-value" id="boostIncome">x1</span></div>
+</div>
+<div class="boost" id="boostBox">🔥 Бонусов нет</div>
+<div class="history-title">📺 <span data-i18n="history">ПОСЛЕДНИЕ ПУБЛИКАЦИИ</span></div>
+<div class="history-list" id="historyList"><div class="empty" data-i18n="noPosts">Публикаций пока нет</div></div>
+<button class="channel-action" id="channelAction">📺 <span data-i18n="promote">ПРОДВИНУТЬ КАНАЛ</span></button>
+</div></div>
+
+<div class="page" id="shop"><div class="card">
+<div class="title">🛒 <span data-i18n="shop">МАГАЗИН</span></div><div class="subtitle" data-i18n="shopDesc">Оборудование для студии</div>
+<div class="shop-item"><div class="shop-info"><div class="shop-name">💡 <span data-i18n="light">Студийный свет</span></div><div class="shop-desc">+1 € <span data-i18n="perVideo">к видео</span></div></div><button id="light"></button></div>
+<div class="shop-item"><div class="shop-info"><div class="shop-name">🎙️ <span data-i18n="mic">Микрофон Pro</span></div><div class="shop-desc">+2 € <span data-i18n="perVideo">к видео</span></div></div><button id="mic"></button></div>
+<div class="shop-item"><div class="shop-info"><div class="shop-name">📷 <span data-i18n="camera">Камера 4K</span></div><div class="shop-desc">+5 € <span data-i18n="perVideo">к видео</span></div></div><button id="camera"></button></div>
+<div class="shop-item"><div class="shop-info"><div class="shop-name">🖥️ <span data-i18n="pc">Монтажная станция</span></div><div class="shop-desc">+10 € <span data-i18n="perVideo">к видео</span></div></div><button id="pc"></button></div>
+</div></div>
+
+<div class="page" id="profile"><div class="card">
+<div class="profile-head"><div class="profile-avatar">👤</div><div><div class="profile-name" id="profileName">TUBE CREATOR</div><div class="profile-level" id="profileLevel">УРОВЕНЬ 1</div><div class="level-badge" id="profileRank">НОВИЧОК</div></div></div>
+<div class="progress"><div class="energy-head"><span data-i18n="playerXP">Опыт игрока</span><span id="profileXpText">0 / 100 XP</span></div><div class="progress-bar"><div class="progress-fill" id="profileXp"></div></div></div>
+<div class="profile-stats">
+<div class="profile-stat"><small>💰 <span data-i18n="earned">ЗАРАБОТАНО</span></small><b id="pEarned">0 €</b></div>
+<div class="profile-stat"><small>👀 <span data-i18n="views">ПРОСМОТРЫ</span></small><b id="pViews">0</b></div>
+<div class="profile-stat"><small>📺 <span data-i18n="subs">ПОДПИСЧИКИ</span></small><b id="pSubs">0</b></div>
+<div class="profile-stat"><small>🏢 <span data-i18n="studioLevel">СТУДИЯ</span></small><b id="pStudio">1</b></div>
+</div>
+<div class="history-title">🏆 <span data-i18n="achievements">ДОСТИЖЕНИЯ</span></div><div id="achievements"></div>
+</div></div>
+
+<div class="bottom-nav">
+<button class="nav active" data-page="studio"><i>🎬</i><span data-i18n="studio">Студия</span></button>
+<button class="nav" data-page="channel"><i>📺</i><span data-i18n="channel">Канал</span></button>
+<button class="nav" data-page="shop"><i>🛒</i><span data-i18n="shop">Магазин</span></button>
+<button class="nav" data-page="profile"><i>👤</i><span data-i18n="profile">Профиль</span></button>
+</div>
+</div>
+
+<script src="core.js"></script>
+<script src="js/state.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/economy.js"></script>
+<script>
+"use strict";
+
+const $=id=>document.getElementById(id);
+const T={
+ru:{
+home:"МЕНЮ",balance:"БАЛАНС",views:"ПРОСМОТРЫ",subs:"ПОДПИСЧИКИ",studio:"СТУДИЯ",channel:"Канал",shop:"Магазин",profile:"Профиль",
+studioDesc:"Создай и опубликуй контент",gaming:"GAMING",vlog:"ВЛОГ",challenge:"ЧЕЛЛЕНДЖ",premium:"ПРЕМИУМ",gamingDesc:"Стабильный контент",vlogDesc:"Больше подписчиков",challengeDesc:"Высокий потенциал",premiumDesc:"Максимальный потенциал",publish:"ОПУБЛИКОВАТЬ",quick:"БЫСТРАЯ<br>ПУБЛИКАЦИЯ",chooseVideo:"Выбери тип видео",result:"📊 Результат появится после публикации",energy:"Энергия",save:"СОХРАНИТЬ",channelXP:"Опыт канала",earned:"ЗАРАБОТАНО",studioLevel:"СТУДИЯ",incomeSec:"Доход/сек",subIncome:"Подписчики",bonus:"Бонус",history:"ПОСЛЕДНИЕ ПУБЛИКАЦИИ",noPosts:"Публикаций пока нет",promote:"ПРОДВИНУТЬ КАНАЛ",shopDesc:"Оборудование для студии",light:"Студийный свет",mic:"Микрофон Pro",camera:"Камера 4K",pc:"Монтажная станция",perVideo:"к видео",playerXP:"Опыт игрока",achievements:"ДОСТИЖЕНИЯ",noEnergy:"⚡ Недостаточно энергии",noMoney:"💰 Недостаточно денег",published:"опубликован",none:"🔥 Бонусов нет",viral:"🔥 ВИРУС x2",seconds:"сек.",firstChannel:"Первый канал",firstChannelDesc:"Опубликовать первое видео",firstIncome:"Первый доход",firstIncomeDesc:"Заработать 100 €",views1k:"1K просмотров",views1kDesc:"Набрать 1 000 просмотров",subs100:"100 подписчиков",subs100Desc:"Набрать 100 подписчиков",level5:"Уровень 5",level5Desc:"Достичь 5 уровня",level10:"Уровень 10",level10Desc:"Достичь 10 уровня",viralAuthor:"Вирусный автор",viralAuthorDesc:"Получить вирусное видео",bigStudio:"Большая студия",bigStudioDesc:"Улучшить студию 5 раз",nextUpgrade:"Следующий:",levelWord:"УРОВЕНЬ",imperator:"ИМПЕРАТОР",mediaBoss:"МЕДИА-БОСС",pro:"ПРОФИ",creator:"СОЗДАТЕЛЬ",newbie:"НОВИЧОК",normal:"Обычный",success:"Успех",viralResult:"ВИРУС",legendary:"ЛЕГЕНДА",gamingName:"Gaming",vlogName:"Vlog",challengeName:"Челлендж",premiumName:"Премиум",noBonus:"🔥 Бонусов нет"
+},
+de:{
+home:"MENÜ",balance:"KONTOSTAND",views:"AUFRUFE",subs:"ABONNENTEN",studio:"STUDIO",channel:"Kanal",shop:"Shop",profile:"Profil",
+studioDesc:"Erstelle und veröffentliche Inhalte",gaming:"GAMING",vlog:"VLOG",challenge:"CHALLENGE",premium:"PREMIUM",gamingDesc:"Stabiler Content",vlogDesc:"Mehr Abonnenten",challengeDesc:"Hohes Potenzial",premiumDesc:"Maximales Potenzial",publish:"VERÖFFENTLICHEN",quick:"SCHNELLE<br>VERÖFFENTLICHUNG",chooseVideo:"Videotyp auswählen",result:"📊 Ergebnis erscheint nach der Veröffentlichung",energy:"Energie",save:"SPEICHERN",channelXP:"Kanal-XP",earned:"VERDIENT",studioLevel:"STUDIO",incomeSec:"Einkommen/Sek.",subIncome:"Abonnenten",bonus:"Bonus",history:"LETZTE VERÖFFENTLICHUNGEN",noPosts:"Noch keine Veröffentlichungen",promote:"KANAL BEWERBEN",shopDesc:"Ausrüstung für dein Studio",light:"Studiolicht",mic:"Pro-Mikrofon",camera:"4K-Kamera",pc:"Schnittstation",perVideo:"pro Video",playerXP:"Spieler-XP",achievements:"ERFOLGE",noEnergy:"⚡ Nicht genug Energie",noMoney:"💰 Nicht genug Geld",published:"veröffentlicht",none:"🔥 Keine Boni",viral:"🔥 VIRAL x2",seconds:"Sek.",firstChannel:"Erster Kanal",firstChannelDesc:"Erstes Video veröffentlichen",firstIncome:"Erstes Einkommen",firstIncomeDesc:"100 € verdienen",views1k:"1K Aufrufe",views1kDesc:"1.000 Aufrufe erreichen",subs100:"100 Abonnenten",subs100Desc:"100 Abonnenten erreichen",level5:"Level 5",level5Desc:"Level 5 erreichen",level10:"Level 10",level10Desc:"Level 10 erreichen",viralAuthor:"Viral-Autor",viralAuthorDesc:"Ein virales Video erhalten",bigStudio:"Großes Studio",bigStudioDesc:"Studio 5-mal verbessern",nextUpgrade:"Nächste:",levelWord:"LEVEL",imperator:"IMPERATOR",mediaBoss:"MEDIEN-BOSS",pro:"PROFI",creator:"CREATOR",newbie:"NEULING",normal:"Normal",success:"Erfolg",viralResult:"VIRAL",legendary:"LEGENDÄR",gamingName:"Gaming",vlogName:"Vlog",challengeName:"Challenge",premiumName:"Premium",noBonus:"🔥 Keine Boni"
+},
+en:{
+home:"MENU",balance:"BALANCE",views:"VIEWS",subs:"SUBSCRIBERS",studio:"STUDIO",channel:"Channel",shop:"Shop",profile:"Profile",
+studioDesc:"Create and publish content",gaming:"GAMING",vlog:"VLOG",challenge:"CHALLENGE",premium:"PREMIUM",gamingDesc:"Stable content",vlogDesc:"More subscribers",challengeDesc:"High potential",premiumDesc:"Maximum potential",publish:"PUBLISH",quick:"QUICK<br>PUBLICATION",chooseVideo:"Choose a video type",result:"📊 Result appears after publishing",energy:"Energy",save:"SAVE",channelXP:"Channel XP",earned:"EARNED",studioLevel:"STUDIO",incomeSec:"Income/sec",subIncome:"Subscribers",bonus:"Bonus",history:"LATEST PUBLICATIONS",noPosts:"No publications yet",promote:"PROMOTE CHANNEL",shopDesc:"Equipment for your studio",light:"Studio Light",mic:"Pro Microphone",camera:"4K Camera",pc:"Editing Station",perVideo:"per video",playerXP:"Player XP",achievements:"ACHIEVEMENTS",noEnergy:"⚡ Not enough energy",noMoney:"💰 Not enough money",published:"published",none:"🔥 No bonuses",viral:"🔥 VIRAL x2",seconds:"sec.",firstChannel:"First Channel",firstChannelDesc:"Publish your first video",firstIncome:"First Income",firstIncomeDesc:"Earn 100 €",views1k:"1K Views",views1kDesc:"Reach 1,000 views",subs100:"100 Subscribers",subs100Desc:"Reach 100 subscribers",level5:"Level 5",level5Desc:"Reach level 5",level10:"Level 10",level10Desc:"Reach level 10",viralAuthor:"Viral Author",viralAuthorDesc:"Get a viral video",bigStudio:"Big Studio",bigStudioDesc:"Upgrade studio 5 times",nextUpgrade:"Next:",levelWord:"LEVEL",imperator:"EMPEROR",mediaBoss:"MEDIA BOSS",pro:"PRO",creator:"CREATOR",newbie:"NEWBIE",normal:"Normal",success:"Success",viralResult:"VIRAL",legendary:"LEGENDARY",gamingName:"Gaming",vlogName:"Vlog",challengeName:"Challenge",premiumName:"Premium",noBonus:"🔥 No bonuses"
+}
+};
+
+let currentLang=Core.getLang();
+function syncLanguage(){currentLang=Core.getLang();document.documentElement.lang=currentLang;}
+function tr(key){syncLanguage();return T[currentLang]?.[key]??T.ru[key]??key;}
+function applyLanguage(){syncLanguage();document.querySelectorAll("[data-i18n]").forEach(el=>el.innerHTML=tr(el.dataset.i18n));}
+
+function goHome(){window.location.href="index.html"}
+
+const saved=GameStorage.load();
+if(saved)GameState.replaceState(saved);
+
+const state=()=>GameState.getState();
+const save=()=>GameStorage.save(state());
+const money=n=>Number(n).toLocaleString("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2})+" 🪙";
+
+const items={
+light:{price:500,power:1},
+mic:{price:1500,power:2},
+camera:{price:4000,power:5},
+pc:{price:10000,power:10}
+};
+
+const videos={
+gaming:{name:"Gaming",icon:"🎮",cost:0,views:20,subs:2,energy:1,money:1},
+vlog:{name:"Vlog",icon:"🎬",cost:10,views:35,subs:5,energy:2,money:3},
+challenge:{name:"Challenge",icon:"🔥",cost:30,views:70,subs:10,energy:4,money:8},
+premium:{name:"Premium",icon:"💎",cost:100,views:180,subs:30,energy:7,money:25}
+};
+
+const level=()=>Math.max(1,Math.floor(Number(GameState.get("upgrades.studio",1))));
+const views=()=>Number(GameState.get("channel.views",0))||0;
+const subs=()=>Number(GameState.get("channel.subscribers",0))||0;
+const xp=()=>Number(GameState.get("channel.xp",0))||0;
+const equip=()=>Object.keys(items).reduce((a,k)=>a+(GameState.get("upgrades.shop_"+k,0)?items[k].power:0),0);
+const viral=()=>Number(GameState.get("channel.viralUntil",0))>Date.now()?2:1;
+const income=()=>Number(GameEconomy.getIncomePerSecond?.()||0);
+
+const rank=l=>l>=20?"👑 "+tr("imperator"):
+l>=15?"💎 "+tr("mediaBoss"):
+l>=10?"🔥 "+tr("pro"):
+l>=5?"🚀 "+tr("creator"):"🌱 "+tr("newbie");
+
+function addStats(v,s){
+GameState.set("channel.views",views()+v);
+GameState.set("channel.subscribers",subs()+s);
+GameState.set("channel.xp",xp()+v);
+}
+
+function publish(t){
+let s=state(),v=videos[t];
+
+if(s.player.energy<v.energy){$("message").textContent=tr("noEnergy");return}
+if(v.cost&&!GameEconomy.spendMoney(v.cost)){$("message").textContent=tr("noMoney");return}
+
+s.player.energy-=v.energy;
+
+let r=Math.random();
+let m=r<.55?1:r<.85?1.5:r<.98?3:6;
+let label=r<.55?"📊 "+tr("normal"):
+r<.85?"🔥 "+tr("success"):
+r<.98?"🚀 "+tr("viralResult"):
+"💎 "+tr("legendary");
+
+let L=level(),e=equip();
+let V=Math.floor((v.views+L*5+e*2)*m);
+let S=Math.max(1,Math.floor((v.subs+L+e)*m));
+let M=Math.max(1,Math.floor((v.money+e)*m));
+
+GameEconomy.addMoney(M);
+addStats(V,S);
+
+if(m>=3){
+GameState.set("channel.viralUntil",Date.now()+30000);
+GameState.set("channel.viralMultiplier",2);
+}
+
+let h=GameState.get("channel.history",[])||[];
+h.unshift({name:v.name,icon:v.icon,label,views:V,subs:S,money:M});
+GameState.set("channel.history",h.slice(0,4));
+
+$("message").textContent="🎬 "+v.name+" "+tr("published")+"!";
+$("result").textContent=label+" • "+V+" 👀 • +"+S+" 👥 • +"+M+" 🪙";
+
+render();
+save();
+}
+
+function achievements(){
+let s=state();
+let a=[
+["🏆 "+tr("firstChannel"),tr("firstChannelDesc"),views()>0],
+["💰 "+tr("firstIncome"),tr("firstIncomeDesc"),s.player.totalEarned>=100],
+["👀 "+tr("views1k"),tr("views1kDesc"),views()>=1000],
+["👥 "+tr("subs100"),tr("subs100Desc"),subs()>=100],
+["🚀 "+tr("level5"),tr("level5Desc"),xp()>=400],
+["💎 "+tr("level10"),tr("level10Desc"),xp()>=900],
+["🔥 "+tr("viralAuthor"),tr("viralAuthorDesc"),Number(GameState.get("channel.viralUntil",0))>0],
+["🏢 "+tr("bigStudio"),tr("bigStudioDesc"),level()>=5]
+];
+
+$("achievements").innerHTML=a.map(x=>`<div class="achievement ${x[2]?"done":"locked"}"><b>${x[0]}</b><span>${x[1]}</span>${x[2]?'<span class="check">✓</span>':''}</div>`).join("");
+}
+
+function render(){syncLanguage();
+let s=state(),L=level(),X=xp(),V=views(),S=subs();
+let E=Math.max(0,Math.min(100,s.player.energy||0));
+
+$("money").textContent=money(s.player.money);
+$("studioViewsMini").textContent=V.toLocaleString("de-DE");
+$("studioSubsMini").textContent=S.toLocaleString("de-DE");
+if($("studioLevelHero")) $("studioLevelHero").textContent=L;
+if($("hudMoney")) $("hudMoney").textContent=money(s.player.money);
+
+if($("hudXp")) $("hudXp").style.width=(X%100)+"%";
+$("views").textContent=V.toLocaleString(currentLang==="en"?"en-US":"de-DE");
+$("topSubs").textContent=S.toLocaleString(currentLang==="en"?"en-US":"de-DE");
+
+$("energy").style.width=E+"%";
+$("energyText").textContent=Math.floor(E)+" / 100";
+
+let c=100*2**(L-1);
+$("upgradeInfo").textContent="Lv."+L+" • +"+equip()+" € • "+tr("nextUpgrade")+" "+money(c);
+$("upgrade").textContent="🚀 "+money(c);
+$("upgrade").disabled=s.player.money<c;
+
+let CL=Math.floor(X/100)+1;
+if($("hudLevel")) $("hudLevel").textContent=CL;
+$("channelName").textContent=(s.player.name||"TUBE")+" CHANNEL";
+$("channelLevel").textContent=tr("levelWord")+" "+CL;
+$("channelRank").textContent=rank(CL);
+$("xpText").textContent=X%100+" / 100 XP";
+$("xp").style.width=X%100+"%";
+
+$("subs").textContent=S;
+$("channelViews").textContent=V;
+$("earned").textContent=money(s.player.totalEarned||0);
+$("studioLevel").textContent=L;
+$("incomeSec").textContent=money(income());
+$("subIncome").textContent=money(S/1000);
+$("boostIncome").textContent="x"+viral();
+
+let until=Number(GameState.get("channel.viralUntil",0));
+$("boostBox").textContent=until>Date.now()?tr("viral")+" • "+Math.ceil((until-Date.now())/1000)+" "+tr("seconds"):tr("none");
+
+$("profileName").textContent=s.player.name||"TUBE CREATOR";
+$("profileLevel").textContent=tr("levelWord")+" "+CL;
+$("profileRank").textContent=rank(CL);
+$("profileXpText").textContent=X%100+" / 100 XP";
+$("profileXp").style.width=X%100+"%";
+$("pEarned").textContent=money(s.player.totalEarned||0);
+$("pViews").textContent=V;
+$("pSubs").textContent=S;
+$("pStudio").textContent=L;
+
+Object.keys(items).forEach(k=>{
+let b=$(k),yes=GameState.get("upgrades.shop_"+k,0);
+b.textContent=yes?"✓":money(items[k].price);
+b.disabled=!!yes||s.player.money<items[k].price;
+});
+
+let h=GameState.get("channel.history",[])||[];
+$("historyList").innerHTML=h.length?h.map(x=>`<div class="history-item"><div class="history-icon">${x.icon}</div><div><div class="history-name">${x.label} • ${x.name==="Gaming"?tr("gamingName"):x.name==="Vlog"?tr("vlogName"):x.name==="Challenge"?tr("challengeName"):x.name==="Premium"?tr("premiumName"):x.name}</div><div class="history-info">${x.views} 👀 • +${x.subs} 👥</div></div><div class="history-money">+${x.money} 🪙</div></div>`).join(""):`<div class="empty">${tr("noPosts")}</div>`;
+
+achievements();
+}
+
+$("tap").onclick=()=>publish("gaming");
+
+$("bonus").onclick=()=>{
+GameEconomy.addMoney(100);
+render();
+save();
+};
+
+
+$("upgrade").onclick=()=>{
+let c=100*2**(level()-1);
+if(GameEconomy.spendMoney(c)){
+GameState.set("upgrades.studio",level()+1);
+render();
+save();
+}
+};
+
+$("channelAction").onclick=()=>{
+let s=state();
+if(s.player.energy<5){$("message").textContent=tr("noEnergy");return}
+s.player.energy-=5;
+addStats(level()*25,Math.max(1,Math.floor(level()*25/8)));
+GameEconomy.addMoney(level()*5);
+render();
+save();
+};
+
+Object.keys(items).forEach(k=>$(k).onclick=()=>{
+if(GameEconomy.spendMoney(items[k].price)){
+GameState.set("upgrades.shop_"+k,1);
+render();
+save();
+}
+});
+
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{
+document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+$(b.dataset.page).classList.add("active");
+render();
+});
+
+applyLanguage();
+render();
+
+setInterval(()=>{
+GameEconomy.update(Date.now());
+render();
+save();
+},1000);
+</script>
+</body>
+</html>
+<style id="studio-theme-runtime-game">
+:root{--quick-color:#ff3348;--money-color:#ff3348}
+.quick-ring{
+  border-color:var(--quick-color)!important;
+  box-shadow:0 0 0 6px #10161d,0 0 0 7px color-mix(in srgb,var(--quick-color) 55%,transparent),0 14px 30px #000!important;
+}
+.ring-inner{border-color:color-mix(in srgb,var(--quick-color) 55%,transparent)!important}
+.ring-inner .play{color:var(--quick-color)!important}
+.money,.income-value,.history-money,#earned,#incomeSec,#subIncome,#pEarned,#hudMoney,#upgrade,#light,#mic,#camera,#pc,#bonus{color:var(--money-color)!important}
+</style>
+<script>
+(function(){
+  const colors=['#ff3348','#ff8a2a','#ffd21f','#38d979','#24c7e8','#4287ff','#a65cff'];
+  function apply(){
+    const q=Math.max(0,Math.min(6,Number(localStorage.getItem('tube_empire_quick_button_color_v1'))||0));
+    const m=Math.max(0,Math.min(6,Number(localStorage.getItem('tube_empire_money_color_v1'))||0));
+    document.documentElement.style.setProperty('--quick-color',colors[q]);
+    document.documentElement.style.setProperty('--money-color',colors[m]);
+  }
+  function channelAvatar(){
+    const icons=['▶️','⭐','🎮','🔥','⚡','🚀','👑'];
+    const i=Math.max(0,Math.min(6,Number(localStorage.getItem('tube_empire_channel_avatar_v1'))||0));
+    const el=document.querySelector('#channel .channel-head .avatar');
+    if(el)el.textContent=icons[i];
+  }
+  document.addEventListener('DOMContentLoaded',function(){apply();channelAvatar();});
+})();
+</script>
