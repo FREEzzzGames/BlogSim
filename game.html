@@ -331,7 +331,7 @@ button:disabled{cursor:default}
 .action-column .upgrade-button{font-size:6px;padding:6px}
 
 .studio-bottom{
-  height:36px;flex:none;display:grid;grid-template-columns:1fr 1fr 92px 92px;gap:6px;
+  height:36px;flex:none;display:grid;grid-template-columns:1fr 1fr 92px;gap:6px;
 }
 .mini-stat,.bottom-action{
   min-width:0;border:1px solid #35414d;border-radius:4px;background:#111820;
@@ -352,7 +352,7 @@ button:disabled{cursor:default}
   .hero-avatar{width:68px;height:68px;font-size:29px}.hero-name{font-size:11px}.hero-name strong{font-size:15px}
   .studio-top{grid-template-columns:78px 1fr 54px}
   .studio-back{font-size:7px;padding:0 6px}
-  .studio-bottom{grid-template-columns:1fr 1fr 78px 78px}
+  .studio-bottom{grid-template-columns:1fr 1fr 78px}
 }
 @media(max-height:700px){
   .header{height:45px}.balance{height:62px;margin:5px 0}.stats{height:47px}
@@ -467,7 +467,6 @@ button:disabled{cursor:default}
 
   <div class="studio-top">
     <div class="studio-nav-pair">
-      <button class="studio-back" onclick="history.back()" aria-label="Назад">‹</button>
       <button class="studio-menu" onclick="goHome()" aria-label="Меню">⌂</button>
     </div>
     <div class="studio-heading">
@@ -481,8 +480,6 @@ button:disabled{cursor:default}
   <div class="studio-center">
 
     <div class="publication-column">
-      <div class="column-label">CONTENT / 04</div>
-
       <div class="video video-card">
         <div class="video-icon">🎮</div>
         <div class="video-copy">
@@ -521,7 +518,6 @@ button:disabled{cursor:default}
     </div>
 
     <div class="action-column">
-      <div class="column-label">QUICK ACTION</div>
       <div class="quick-ring" id="tap">
         <div class="ring-inner">
           <div class="play">▶</div>
@@ -556,7 +552,6 @@ button:disabled{cursor:default}
     <div class="mini-stat"><span>VIEWS</span><b id="studioViewsMini">0</b></div>
     <div class="mini-stat"><span>SUBSCRIBERS</span><b id="studioSubsMini">0</b></div>
     <button class="bottom-action bonus" id="bonus">🎁 +100 €</button>
-    <button class="bottom-action" id="save">💾 <span data-i18n="save">СОХРАНИТЬ</span></button>
   </div>
 
 </div>
@@ -742,7 +737,7 @@ let E=Math.max(0,Math.min(100,s.player.energy||0));
 $("money").textContent=money(s.player.money);
 $("studioViewsMini").textContent=V.toLocaleString("de-DE");
 $("studioSubsMini").textContent=S.toLocaleString("de-DE");
-if($("studioLevelHero")) $("studioLevelHero").textContent=L;
+$("studioLevelHero").textContent=L;
 if($("hudMoney")) $("hudMoney").textContent=money(s.player.money);
 
 if($("hudXp")) $("hudXp").style.width=(X%100)+"%";
@@ -806,7 +801,6 @@ render();
 save();
 };
 
-$("save").onclick=()=>save();
 
 $("upgrade").onclick=()=>{
 let c=100*2**(level()-1);
