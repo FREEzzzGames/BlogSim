@@ -610,8 +610,6 @@ button:disabled{cursor:default}
 </div>
 
 <script src="core.js"></script>
-<script src="js/state.js"></script>
-<script src="js/storage.js"></script>
 <script src="js/economy.js"></script>
 <script>
 "use strict";
@@ -845,7 +843,7 @@ render();
 applyLanguage();
 render();
 
-setInterval(()=>{ GameEconomy.update(Date.now()); let s=state(); if(s.player.energy<100) s.player.energy=Math.min(100,s.player.energy+1); render(); save(); },1000);
+setInterval(()=>{ GameEconomy.update(Date.now()); render(); save(); },1000);
 </script>
 </body>
 </html>
