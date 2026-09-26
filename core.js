@@ -22,7 +22,7 @@
       views:0, subscribers:0, xp:0, viralUntil:0, viralMultiplier:1, history:[]
     },
     avatar:{gender:0,head:0,torso:0,legs:0,accessory:0},
-    studio:{moneyColor:0,pet:0,studioButton:0,quickButton:0,channelAvatar:0,walls:0,neon:0,poster:0},
+    studio:{walls:0,neon:0,poster:0,pet:0},
     settings:{language:localStorage.getItem('freezzzLang')||'ru',sound:localStorage.getItem('freezzzSound')!=='false',vibration:true}
   };
 
@@ -68,7 +68,7 @@
     {id:'creator_agency',icon:'📡',cost:25000,incomePerSec:6,name:{ru:'Creator Agency',de:'Creator-Agentur',en:'Creator Agency'}},
     {id:'production_house',icon:'🎥',cost:120000,incomePerSec:30,name:{ru:'Продакшн-хаус',de:'Produktionshaus',en:'Production House'}},
     {id:'media_network',icon:'🌐',cost:750000,incomePerSec:180,name:{ru:'Медиа-сеть',de:'Mediennetzwerk',en:'Media Network'}},
-    {id:'global_platform',icon:'🚀',cost:5000000,incomePerSec:900,name:{ru:'Глобальная платформа',de:'Globale Plattform',en:'Global Platform'}}
+    {id:'global_platform',icon:'🚀',cost:5000000,incomePerSec:900,name:{ru:'Глобальная платформа',de:'Globale Platform',en:'Global Platform'}}
   ];
 
   function syncProgress(){
@@ -136,19 +136,19 @@
   // 1) Main-menu Studio button
   // 2) Quick Publication button
   // 3) Money numbers
-  // Unified customization catalog used by every screen.
+  // Each has 2 free + 5 paid.
   // =========================================================
   const COLOR_PALETTE = [
-    {id:'white',  name:'Белый',    color:'#f5f7fa', price:0},
-    {id:'red',    name:'Красный',  color:'#ff3348', price:0},
-    {id:'orange', name:'Оранжевый',color:'#ff8a2a', price:500},
-    {id:'yellow', name:'Жёлтый',  color:'#ffd21f', price:1500},
-    {id:'green',  name:'Зелёный', color:'#38d979', price:2500},
-    {id:'cyan',   name:'Бирюзовый',color:'#24c7e8', price:4000},
-    {id:'blue',   name:'Синий',   color:'#4287ff', price:7000},
-    {id:'violet', name:'Фиолетовый',color:'#a65cff', price:10000},
-    {id:'pink',   name:'Розовый', color:'#ff5ca8', price:15000},
-    {id:'silver', name:'Серебро', color:'#b9c4ce', price:25000}
+    {id:'white',  name:'Белый',     color:'#f5f7fa', price:0},
+    {id:'red',    name:'Красный',   color:'#ff3348', price:0},
+    {id:'orange', name:'Оранжевый', color:'#ff8a2a', price:0},
+    {id:'yellow', name:'Жёлтый',    color:'#ffd21f', price:500},
+    {id:'green',  name:'Зелёный',   color:'#38d979', price:1500},
+    {id:'cyan',   name:'Голубой',   color:'#24c7e8', price:4000},
+    {id:'blue',   name:'Синий',     color:'#4287ff', price:10000},
+    {id:'violet', name:'Фиолетовый',color:'#a65cff', price:25000},
+    {id:'pink',   name:'Розовый',   color:'#ff5ca8', price:15000},
+    {id:'silver', name:'Серебро',   color:'#b9c4ce', price:25000}
   ];
 
   const COLOR_KEYS = {
@@ -186,33 +186,8 @@
   ];
   const PET_KEY='tube_empire_pet_v1';
 
-
-  function readOwnedMap(key){
-    try{return JSON.parse(localStorage.getItem(key)||'{}')||{}}
-    catch(e){return {}}
-  }
-
-  function writeOwnedMap(key,map){
-    localStorage.setItem(key,JSON.stringify(map));
-  }
-
   function emitChange(type){
     try{window.dispatchEvent(new CustomEvent('tubeEmpireChange',{detail:{type}}));}catch(e){}
-  }
-
-  function migrateCustomization(){
-    try{
-      const oldMoney=localStorage.getItem('tube_empire_money_color');
-      const oldStudio=localStorage.getItem('tube_empire_studio_button_color');
-      const oldQuick=localStorage.getItem('tube_empire_quick_button_color');
-      const oldChannel=localStorage.getItem('tube_empire_channel_avatar');
-      const oldPet=localStorage.getItem('tube_empire_pet');
-      if(localStorage.getItem(COLOR_KEYS.money)===null && oldMoney!==null) localStorage.setItem(COLOR_KEYS.money,oldMoney);
-      if(localStorage.getItem(COLOR_KEYS.studio)===null && oldStudio!==null) localStorage.setItem(COLOR_KEYS.studio,oldStudio);
-      if(localStorage.getItem(COLOR_KEYS.quick)===null && oldQuick!==null) localStorage.setItem(COLOR_KEYS.quick,oldQuick);
-      if(localStorage.getItem(CHANNEL_AVATAR_KEY)===null && oldChannel!==null) localStorage.setItem(CHANNEL_AVATAR_KEY,oldChannel);
-      if(localStorage.getItem(PET_KEY)===null && oldPet!==null) localStorage.setItem(PET_KEY,oldPet);
-    }catch(e){}
   }
 
   function normalizeStudioConfig(src){
@@ -225,13 +200,14 @@
     return d;
   }
 
-  migrateCustomization();
+  function readOwnedMap(key){
+    try{return JSON.parse(localStorage.getItem(key)||'{}')||{}}
+    catch(e){return {}}
+  }
 
-  try{
-    const storedStudio=JSON.parse(localStorage.getItem('tube_empire_studio_config')||'null');
-    const normalized=normalizeStudioConfig(storedStudio);
-    state.studio={...state.studio,...normalized};
-  }catch(e){}
+  function writeOwnedMap(key,map){
+    localStorage.setItem(key,JSON.stringify(map));
+  }
 
   function getColorTheme(kind){
     const key=COLOR_KEYS[kind];
@@ -258,7 +234,6 @@
 
     if(item.price===0 || owned[index]){
       localStorage.setItem(key,String(index));
-      emitChange(kind+'Color');
       return true;
     }
 
@@ -267,8 +242,6 @@
     owned[index]=true;
     writeOwnedMap(key+'_owned',owned);
     localStorage.setItem(key,String(index));
-    emitChange(kind+'Color');
-
     return true;
   }
 
@@ -289,16 +262,12 @@
 
     if(item.price===0 || owned[index]){
       localStorage.setItem(CHANNEL_AVATAR_KEY,String(index));
-      emitChange('channelAvatar');
       return true;
     }
 
-    if(!Core.spendMoney(item.price)) return false;
-
-    owned[index]=true;
+    if(!Core.spendMoney(item.price)) return false;    owned[index]=true;
     writeOwnedMap(CHANNEL_AVATAR_KEY+'_owned',owned);
     localStorage.setItem(CHANNEL_AVATAR_KEY,String(index));
-    emitChange('channelAvatar');
 
     return true;
   }
@@ -331,7 +300,6 @@
       state.player.money -= v;
       state.player.totalSpent += v;
       save();
-      emitChange('money');
       return true;
     },
     getEnergy:()=>{ passive(); return Number(state.player.energy)||0; },
@@ -351,37 +319,23 @@
     buyColorTheme:(kind,index)=>buyColorTheme(kind,index),
     getChannelAvatars:()=>getChannelAvatars(),
     getChannelAvatar:()=>getChannelAvatar(),
-
-    getPets:()=>PETS.map((x,i)=>({...x,index:i,owned:x.price===0||readOwnedMap(PET_KEY+'_owned')[i]})),
+    buyChannelAvatar:index=>buyChannelAvatar(index),
+    getPets:()=>{const owned=readOwnedMap(PET_KEY+'_owned');return PETS.map((x,i)=>({...x,index:i,owned:x.price===0||!!owned[i]}))},
     getPet:()=>PETS[Math.max(0,Math.min(PETS.length-1,Number(localStorage.getItem(PET_KEY))||0))],
     buyPet:index=>{
-      index=Number(index); const item=PETS[index]; if(!item) return false;
+      index=Number(index);const item=PETS[index];if(!item)return false;
       const owned=readOwnedMap(PET_KEY+'_owned');
-      if(item.price===0 || owned[index]){localStorage.setItem(PET_KEY,String(index));emitChange('pet');return true;}
-      if(!Core.spendMoney(item.price)) return false;
-      owned[index]=true; writeOwnedMap(PET_KEY+'_owned',owned); localStorage.setItem(PET_KEY,String(index));
-      emitChange('pet'); return true;
+      if(item.price===0||owned[index]){localStorage.setItem(PET_KEY,String(index));emitChange('pet');return true}
+      if(!Core.spendMoney(item.price))return false;
+      owned[index]=true;writeOwnedMap(PET_KEY+'_owned',owned);localStorage.setItem(PET_KEY,String(index));emitChange('pet');return true;
     },
     getAvatarConfig:()=>{try{return JSON.parse(localStorage.getItem('tube_empire_avatar_config')||'{}')}catch(e){return {}}},
     setAvatarConfig:a=>{localStorage.setItem('tube_empire_avatar_config',JSON.stringify(a||{}));state.avatar=clone(a||{});save();emitChange('avatar');return true},
-    getStudioConfig:()=>{
-      try{
-        const stored=JSON.parse(localStorage.getItem('tube_empire_studio_config')||'null');
-        return normalizeStudioConfig(stored||state.studio);
-      }catch(e){return normalizeStudioConfig(state.studio)}
-    },
-    setStudioConfig:s=>{
-      const normalized=normalizeStudioConfig(s);
-      localStorage.setItem('tube_empire_studio_config',JSON.stringify(normalized));
-      state.studio={...state.studio,...normalized};
-      save();
-      emitChange('studio');
-      return true;
-    },
+    getStudioConfig:()=>{try{return normalizeStudioConfig(JSON.parse(localStorage.getItem('tube_empire_studio_config')||'null')||state.studio)}catch(e){return normalizeStudioConfig(state.studio)}},
+    setStudioConfig:s=>{const normalized=normalizeStudioConfig(s);localStorage.setItem('tube_empire_studio_config',JSON.stringify(normalized));state.studio={...state.studio,...normalized};save();emitChange('studio');return true},
     getMoneyColor:()=>getColorTheme('money'),
     getStudioButtonColor:()=>getColorTheme('studio'),
     getQuickButtonColor:()=>getColorTheme('quick'),
-    buyChannelAvatar:index=>buyChannelAvatar(index),
 
     getTheme:()=>localStorage.getItem('freezzzTheme')||'dark',
     setTheme:t=>{localStorage.setItem('freezzzTheme',t);Core.applyTheme(t)},
@@ -407,15 +361,7 @@
     },
     haptic:s=>{if(!state.settings.vibration)return;try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred(s||'light')}catch(e){}},
     getUserName:def=>'anonymous'===def?def:(state.player.name&&state.player.name!=='Player'?state.player.name:(localStorage.getItem('tube_empire_custom_name')||window.Telegram?.WebApp?.initDataUnsafe?.user?.username&&'@'+window.Telegram.WebApp.initDataUnsafe.user.username||window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name||def||'Blogger')),
-    setUserName:name=>{
-      const value=String(name??'').trim().slice(0,32);
-      if(!value) return false;
-      state.player.name=value;
-      localStorage.setItem('tube_empire_custom_name',value);
-      save();
-      emitChange('name');
-      return true;
-    },
+    setUserName:name=>{const value=String(name??'').trim().slice(0,32);if(!value)return false;state.player.name=value;localStorage.setItem('tube_empire_custom_name',value);save();emitChange('name');return true},
     getAvatarString:()=>{
       try{
         const a=JSON.parse(localStorage.getItem('tube_empire_avatar_config')||'{}');
@@ -473,45 +419,19 @@
     unlockItem:(c,id,cost)=>{if(Core.isItemUnlocked(c,id,cost))return true;if(Core.spendMoney(cost)){localStorage.setItem(`unlocked_${c}_${id}`,'true');return true}return false}
   };
 
-  const SYNC_KEYS=new Set([
-    STATE_KEY,
-    'tube_empire_avatar_config','tube_empire_studio_config',
-    COLOR_KEYS.money,COLOR_KEYS.studio,COLOR_KEYS.quick,
-    COLOR_KEYS.money+'_owned',COLOR_KEYS.studio+'_owned',COLOR_KEYS.quick+'_owned',
-    CHANNEL_AVATAR_KEY,CHANNEL_AVATAR_KEY+'_owned',
-    PET_KEY,PET_KEY+'_owned','tube_empire_custom_name'
-  ]);
-
-  window.addEventListener('storage',e=>{
-    if(!e.key || SYNC_KEYS.has(e.key)) emitChange('storage');
-  });
+  const SYNC_KEYS=new Set([STATE_KEY,'tube_empire_avatar_config','tube_empire_studio_config',COLOR_KEYS.money,COLOR_KEYS.studio,COLOR_KEYS.quick,COLOR_KEYS.money+'_owned',COLOR_KEYS.studio+'_owned',COLOR_KEYS.quick+'_owned',CHANNEL_AVATAR_KEY,CHANNEL_AVATAR_KEY+'_owned',PET_KEY,PET_KEY+'_owned','tube_empire_custom_name']);
+  window.addEventListener('storage',e=>{if(!e.key||SYNC_KEYS.has(e.key))emitChange('storage')});
 
   window.Core = Core;
-
   window.GameState = {
     DEFAULT_STATE:clone(DEFAULT),
     getState:()=>state,
-    resetState:()=>{
-      state=clone(DEFAULT);
-      state.economy.lastUpdate=Date.now();
-      save();
-      return state;
-    },
-    replaceState:n=>{
-      state=merge(clone(DEFAULT),n||{});
-      syncProgress();
-      recalcIncome();
-      save();
-      return true;
-    },
+    resetState:()=>{state=clone(DEFAULT);state.economy.lastUpdate=Date.now();save();return state},
+    replaceState:n=>{state=merge(clone(DEFAULT),n||{});syncProgress();recalcIncome();save();return true},
     get,
     set
   };
-
   window.GameEconomy = {
-    update:now=>passive(now),
-    addMoney:Core.addMoney,
-    spend  window.GameEconomy = {
     update:now=>passive(now),
     addMoney:Core.addMoney,
     spendMoney:Core.spendMoney,
@@ -525,11 +445,6 @@
   };
 
   Core.applyTheme(Core.getTheme());
-
-  document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible') passive();
-  });
-
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible') passive()});
   window.addEventListener('beforeunload',save);
-
 })();
