@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FREEzzz Arcade — Reaction</title>
+<script src="arcade_core.js"></script>
+<style>
+:root{--bg:#05070b;--panel:#111820;--line:#52606c;--blue:#35b8ff;--green:#39e879;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow:hidden}
+body{display:flex;justify-content:center;align-items:center}
+.page{width:100%;max-width:620px;height:100dvh;padding:10px;display:flex;flex-direction:column;gap:9px;background:radial-gradient(circle at 50% -10%,rgba(53,184,255,.16),transparent 34%),linear-gradient(180deg,#0b1118 0%,#05070b 62%,#020304 100%);position:relative}
+.page:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px);opacity:.35}
+.head,.card,.footer{position:relative;z-index:1}
+.head{min-height:48px;display:flex;align-items:center;border-bottom:1px solid #26323d;padding-bottom:6px}
+.home{width:44px;height:38px;border-radius:7px;border:1px solid #65727e;background:linear-gradient(#26323c,#111820);color:#fff;font-size:20px}
+.title{flex:1;text-align:center;padding-right:44px;font-size:14px;font-weight:950;letter-spacing:1px;text-shadow:0 0 10px #35b8ff44}
+.card{flex:1;min-height:0;border:1px solid var(--line);border-radius:10px;background:linear-gradient(145deg,rgba(31,42,52,.98),rgba(8,13,18,.98));box-shadow:inset 0 1px 0 #ffffff14,0 8px 22px #0009;padding:12px;display:flex;flex-direction:column}
+.headline{text-align:center;border-bottom:1px solid #293641;padding-bottom:9px}.kicker{color:var(--blue);font-size:8px;font-weight:950;letter-spacing:1px}.game-title{margin:3px 0 0;font-size:19px;font-weight:950;letter-spacing:1px}.record{text-align:center;color:var(--gold);font-size:9px;font-weight:900;margin-top:5px}
+.area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}.react{width:min(54vw,210px);height:min(54vw,210px);min-width:170px;min-height:170px;max-width:210px;max-height:210px;border-radius:50%;border:3px solid var(--blue);background:radial-gradient(circle at 35% 25%,#26394b,#0d1722 58%,#071019);color:#fff;font-size:11px;line-height:1.35;font-weight:950;letter-spacing:.4px;padding:28px;box-shadow:inset 0 2px 0 #ffffff1a,0 0 0 6px #35b8ff0b,0 0 25px #35b8ff22,0 12px 25px #000b;touch-action:manipulation;user-select:none;transition:transform .08s,box-shadow .15s,border-color .15s,background .15s}.react:active{transform:scale(.97)}
+.react.go{background:radial-gradient(circle at 35% 25%,#1f6842,#0d2c1d 58%,#071b12);border-color:var(--green);box-shadow:inset 0 2px 0 #ffffff1a,0 0 0 8px #39e87914,0 0 35px #39e87966,0 12px 25px #000b}
+.result{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.55);font-size:42px;line-height:1;font-weight:1000;color:#fff;text-shadow:0 0 12px #35b8ff99,0 3px 10px #000;opacity:0;pointer-events:none;z-index:5}.result.show{animation:pop .72s cubic-bezier(.16,.8,.24,1) forwards}@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:1}100%{opacity:1;transform:translate(-50%,-50%) translateY(-78px) scale(1.18)}}
+.msg{min-height:46px;text-align:center;color:var(--muted);font-size:8px;display:flex;align-items:center;justify-content:center}.start{width:100%;height:43px;border-radius:7px;border:1px solid #52606c;color:#fff;font-size:9px;font-weight:950;letter-spacing:.5px;background:linear-gradient(135deg,#ff394a,#c91627);border-color:#ff5967;box-shadow:0 0 14px #ff263833,inset 0 1px 0 #ffffff22}
+.footer{text-align:center;color:#66727e;font-size:6.5px;padding-top:5px;border-top:1px solid #202a33}
+@media(max-height:650px){.page{gap:5px;padding:6px}.card{padding:8px}.react{min-width:145px;min-height:145px;width:42vw;height:42vw}}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="head"><button class="home" onclick="location.href='arcade.html'" aria-label="К аркадам">⌂</button><div class="title">⚡ FREEzzz ARCADE — REACTION</div></div>
+<section class="card">
+<div class="headline"><div class="kicker">ARCADE MODE</div><h1 class="game-title">REACTION TEST</h1><div class="record" id="record">Рекорд: —</div></div>
+<div class="area"><button class="react" id="react" type="button">НАЖМИ, КОГДА ПОЯВИТСЯ СИГНАЛ</button><div class="result" id="result"></div></div>
+<div class="msg" id="msg"></div><button class="start" id="start" type="button">СТАРТ</button>
+</section>
+<div class="footer">Tube Empire • FREEzzzGames Arcade</div>
+</main>
+<script>
+let timer=null,ready=false,startTime=0,best=ArcadeCore.getReactionBest();
+const btn=document.getElementById('react'),msg=document.getElementById('msg'),result=document.getElementById('result'),record=document.getElementById('record');
+function renderRecord(){record.textContent='Рекорд: '+(best?best+' ms':'—')}
+function startGame(){clearTimeout(timer);ready=false;startTime=0;btn.classList.remove('go');btn.textContent='ЖДИ СИГНАЛ…';msg.textContent='';timer=setTimeout(()=>{ready=true;startTime=performance.now();btn.classList.add('go');btn.textContent='НАЖМИ!'},700+Math.random()*2200)}
+function tap(){if(!ready){msg.textContent='Жди зелёный сигнал.';return}const ms=Math.round(performance.now()-startTime);ready=false;btn.classList.remove('go');btn.textContent='✓';result.classList.remove('show');void result.offsetWidth;result.textContent=ms+' ms';result.classList.add('show');if(!best||ms<best){best=ms;ArcadeCore.setReactionBest(best)}renderRecord();setTimeout(()=>result.classList.remove('show'),750)}
+btn.addEventListener('click',tap);document.getElementById('start').addEventListener('click',startGame);renderRecord();
+</script>
+</body>
+</html>
