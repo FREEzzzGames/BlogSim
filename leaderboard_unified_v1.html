@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Tube Empire — Топ каналов</title>
+<script src="core.js"></script>
+<style>
+:root, [data-theme="dark"] {
+  --portal-bg: rgba(20, 10, 10, 0.96);
+  --border-col: rgba(255, 204, 0, 0.6);
+  --accent-col: #ffcc00;
+  --title-col: #ffcc00;
+  --btn-bg: rgba(40, 15, 15, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --gold: #f1c40f; --silver: #bdc3c7; --bronze: #e67e22;
+  --text-main: #fff;
+  --text-sub: #ff8888;
+  --body-bg: #0a0505;
+}
+[data-theme="rose"] {
+  --portal-bg: rgba(30, 10, 25, 0.96);
+  --border-col: rgba(233, 30, 99, 0.6);
+  --accent-col: #ffeb3b;
+  --title-col: #ffeb3b;
+  --btn-bg: rgba(60, 15, 40, 0.9);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --gold: #ffeb3b; --silver: #f48fb1; --bronze: #ce93d8;
+  --text-main: #fff;
+  --text-sub: #ff80ab;
+  --body-bg: #150510;
+}
+[data-theme="light"] {
+  --portal-bg: rgba(245, 247, 250, 0.96);
+  --border-col: rgba(230, 81, 0, 0.5);
+  --accent-col: #e65100;
+  --title-col: #e65100;
+  --btn-bg: rgba(255, 255, 255, 0.9);
+  --glass-bg: rgba(230, 235, 245, 0.85);
+  --gold: #f57f17; --silver: #78909c; --bronze: #d7ccc8;
+  --text-main: #1a1a1a;
+  --text-sub: #555555;
+  --body-bg: #e0e4ec;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;width:100%;height:100%;background:var(--body-bg);color:var(--text-main);font-family:monospace;overflow:hidden;transition:background 0.3s;}
+body{padding:6px;display:flex;justify-content:center;align-items:center;position:fixed;inset:0;}
+.portal{
+  width: 100%; height: 100%; max-width: 420px; max-height: 100vh;
+  text-align: center; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 8px; z-index: 10; background: var(--portal-bg); border: 2.5px solid var(--border-col);
+  border-radius: 16px; box-shadow: 0 0 35px rgba(0, 0, 0, 0.2); position: relative;
+}
+.game-ui-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; background: var(--btn-bg); border: 1.5px solid var(--border-col); border-radius: 8px; width: 100%; flex-shrink: 0; font-size: 11px; }
+.back-btn { background: rgba(217, 30, 30, 0.85); border: 1px solid #ff4d4d; color: #fff; padding: 3px 6px; border-radius: 6px; text-decoration: none; font-weight: bold; cursor: pointer; font-size: 8px; }
+.festive-title-box { background: var(--glass-bg); border: 1px dashed var(--border-col); border-radius: 10px; padding: 8px; margin: 2px 0; text-align: center; }
+.leaderboard-list { flex-grow: 1; width: 100%; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; padding-right: 2px; margin: 4px 0; }
+.leader-card { display: flex; justify-content: space-between; align-items: center; background: var(--btn-bg); border: 1px solid var(--border-col); border-radius: 8px; padding: 7px 10px; font-size: 10.5px; text-align: left; }
+.leader-card.player-row { background: var(--glass-bg); border: 2px solid var(--title-col); box-shadow: 0 0 12px rgba(255,204,0,0.3); }
+.rank-1 { color: var(--gold); } .rank-2 { color: var(--silver); } .rank-3 { color: var(--bronze); }
+</style>
+</head>
+<body>
+
+<div class="portal">
+  <div class="game-ui-header">
+    <a href="index.html" class="back-btn" id="menuBtnTxt">⬅ МЕНЮ</a>
+    <div style="color:var(--title-col); font-weight:bold; font-size: 9px;" id="headerTitle">🏆 ТОП КАНАЛОВ</div>
+  </div>
+
+  <div class="festive-title-box">
+    <div style="font-size: 12px; font-weight: 900; color: var(--title-col);" id="mainHeaderTitle">✨ МИРОВЫЕ ТРЕНДЫ YOUTUBE ✨</div>
+    <div style="font-size: 7.5px; color: var(--text-sub); margin-top: 2px;" id="mainSubTitle">Глобальный рейтинг медиа-гигантов</div>
+  </div>
+
+  <div class="leaderboard-list" id="leaderboardList"></div>
+  <div style="font-size: 8px; color: var(--text-sub);" id="timerTxt">Обновление через: 60 сек.</div>
+</div>
+
+<style id="unified-customization-leaderboard-v1">.player-custom-name{font-weight:900;transition:color .15s}.player-custom-money{transition:color .15s}</style>
+<script>
+const langData = {
+  ru: {
+    menu: "⬅ МЕНЮ", title: "🏆 ТОП КАНАЛОВ",
+    festive: "✨ МИРОВЫЕ ТРЕНДЫ YOUTUBE ✨", sub: "Глобальный рейтинг медиа-гигантов",
+    timer: "Следующее обновление через: ", sec: " сек.", playerName: "Вы"
+  },
+  de: {
+    menu: "⬅ MENÜ", title: "🏆 TOP KANÄLE",
+    festive: "✨ WELTWEITE YOUTUBE TRENDS ✨", sub: "Globales Ranking der Medien-Giganten",
+    timer: "Nächstes Update in: ", sec: " Sek.", playerName: "Du"
+  },
+  en: {
+    menu: "⬅ MENU", title: "🏆 TOP CHANNELS",
+    festive: "✨ WORLDWIDE YOUTUBE TRENDS ✨", sub: "Global ranking of media giants",
+    timer: "Next update in: ", sec: " sec.", playerName: "You"
+  }
+};
+
+let competitors = [
+  { name: "🔴 MrBeast", baseScore: 45000000, growth: 120000 },
+  { name: "🎮 PewDiePie", baseScore: 28000000, growth: 95000 },
+  { name: "🎵 T-Series", baseScore: 18500000, growth: 70000 },
+  { name: "🎬 Vlad and Niki", baseScore: 9500000, growth: 45000 },
+  { name: "⚽ Real Madrid", baseScore: 4200000, growth: 25000 },
+  { name: "🎧 Marshmello", baseScore: 2100000, growth: 15000 },
+  { name: "🛹 Ryan Kaji", baseScore: 980000, growth: 8000 },
+  { name: "🔥 Dude Perfect", baseScore: 450000, growth: 4000 },
+  { name: "🎤 Ed Sheeran", baseScore: 180000, growth: 1800 }
+];
+let countdown = 60;
+
+function updateLeaderboardUI() {
+  let lang = Core.getLang();
+  let t = langData[lang] || langData.ru;
+  let money = Core.getMoney();
+  let channelAvatar=Core.getChannelAvatar?.()||{icon:"▶️"};
+  let moneyTheme=Core.getMoneyColor?.()||{color:"#f5f7fa"};
+  let playerName = `${t.playerName} (${Core.getUserName()})`;
+  
+  const setTxt = (id, val) => { let el = document.getElementById(id); if(el) el.textContent = val; };
+
+  setTxt('menuBtnTxt', t.menu);
+  setTxt('headerTitle', t.title);
+  setTxt('mainHeaderTitle', t.festive);
+  setTxt('mainSubTitle', t.sub);
+
+  let list = [{ name: playerName, score: money, isPlayer: true }];
+  competitors.forEach(c => {
+    c.baseScore += Math.floor(c.growth * (Math.random() * 0.4 + 0.8));
+    list.push({ name: c.name, score: c.baseScore, isPlayer: false });
+  });
+  list.sort((a,b) => b.score - a.score);
+
+  let html = "";
+  list.slice(0, 10).forEach((p, idx) => {
+    let rank = idx + 1, rClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''));
+    let rankIcon = rank === 1 ? '👑 1' : (rank === 2 ? '🥈 2' : (rank === 3 ? '🥉 3' : `#${rank}`));
+    html += `
+      <div class="leader-card ${p.isPlayer ? 'player-row' : ''}">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="leader-rank ${rClass}" style="font-weight:bold; width:24px;">${rankIcon}</div>
+          <div class="${p.isPlayer?"player-custom-name":""}" style="font-weight:bold; color:${p.isPlayer?moneyTheme.color:"var(--text-main)"};">${p.isPlayer?channelAvatar.icon+" ":""}${p.name}</div>
+        </div>
+        <div class="${p.isPlayer?"player-custom-money":""}" style="font-weight:bold; color:${p.isPlayer?moneyTheme.color:"var(--title-col)"};">${p.score.toLocaleString('ru-RU', {maximumFractionDigits: 0})} 🪙</div>
+      </div>
+    `;
+  });
+  let listEl = document.getElementById('leaderboardList');
+  if(listEl) listEl.innerHTML = html;
+  listEl?.querySelectorAll('.player-custom-name').forEach(e=>e.style.color=moneyTheme.color);
+}
+
+setInterval(() => {
+  countdown--;
+  let lang = Core.getLang();
+  let t = langData[lang] || langData.ru;
+  let timerEl = document.getElementById('timerTxt');
+  if(timerEl) timerEl.textContent = t.timer + countdown + t.sec;
+  if (countdown <= 0) { countdown = 60; updateLeaderboardUI(); }
+}, 1000);
+
+window.addEventListener('tubeEmpireChange',()=>updateLeaderboardUI());
+document.addEventListener("DOMContentLoaded", () => {
+  updateLeaderboardUI();
+});
+</script>
+</body>
+</html>
