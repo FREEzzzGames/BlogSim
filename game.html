@@ -467,6 +467,7 @@ button:disabled{cursor:default}
 
   <div class="studio-top">
     <div class="studio-nav-pair">
+      <button class="studio-back" onclick="history.back()" aria-label="Назад">‹</button>
       <button class="studio-menu" onclick="goHome()" aria-label="Меню">⌂</button>
     </div>
     <div class="studio-heading">
@@ -610,6 +611,8 @@ button:disabled{cursor:default}
 </div>
 
 <script src="core.js"></script>
+<script src="js/state.js"></script>
+<script src="js/storage.js"></script>
 <script src="js/economy.js"></script>
 <script>
 "use strict";
@@ -664,7 +667,7 @@ const subs=()=>Number(GameState.get("channel.subscribers",0))||0;
 const xp=()=>Number(GameState.get("channel.xp",0))||0;
 const equip=()=>Object.keys(items).reduce((a,k)=>a+(GameState.get("upgrades.shop_"+k,0)?items[k].power:0),0);
 const viral=()=>Number(GameState.get("channel.viralUntil",0))>Date.now()?2:1;
-const income=()=>GameEconomy.getIncomePerSecond();
+const income=()=>subs()/1000*viral();
 
 const rank=l=>l>=20?"👑 "+tr("imperator"):
 l>=15?"💎 "+tr("mediaBoss"):
@@ -739,7 +742,7 @@ let E=Math.max(0,Math.min(100,s.player.energy||0));
 $("money").textContent=money(s.player.money);
 $("studioViewsMini").textContent=V.toLocaleString("de-DE");
 $("studioSubsMini").textContent=S.toLocaleString("de-DE");
-$("studioLevelHero").textContent=L;
+if($("studioLevelHero")) $("studioLevelHero").textContent=L;
 if($("hudMoney")) $("hudMoney").textContent=money(s.player.money);
 
 if($("hudXp")) $("hudXp").style.width=(X%100)+"%";
@@ -843,7 +846,13 @@ render();
 applyLanguage();
 render();
 
-setInterval(()=>{ GameEconomy.update(Date.now()); render(); save(); },1000);
+setInterval(()=>{
+let s=state();
+if(s.player.energy<100)s.player.energy++;
+if(income()>0)GameEconomy.addMoney(income());
+render();
+save();
+},1000);
 </script>
 </body>
 </html>
