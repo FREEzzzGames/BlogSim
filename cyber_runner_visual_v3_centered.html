@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FREEzzz Arcade — Cyber Ninja Runner</title>
+
+<script src="arcade_core.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;user-select:none}
+body{
+  background:
+    radial-gradient(circle at 50% 15%,rgba(53,184,255,.13),transparent 35%),
+    linear-gradient(180deg,#111b26 0%,#05070b 55%,#020304 100%);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+  font-family:monospace;
+}
+#game-container{
+  width:100%;
+  max-width:450px;
+  aspect-ratio:9/16;
+  box-shadow:
+    0 0 0 1px #1d2c38,
+    0 0 25px rgba(53,184,255,.22),
+    0 0 70px rgba(53,184,255,.08);
+  border:2px solid #52606c;
+  position:relative;
+  background:#070b11;
+  overflow:hidden;
+}
+#game-container:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:5;
+  background:repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,.018) 0 1px,
+    transparent 1px 4px
+  );
+  mix-blend-mode:screen;
+}
+</style>
+</head>
+
+<body>
+<div id="game-container"></div>
+
+<script>
+const tg=window.Telegram?.WebApp;
+if(tg) tg.expand();
+
+const RUNNER_BEST_KEY='runnerBest';
+
+class CyberGame extends Phaser.Scene{
+  constructor(){super('CyberGame')}
+
+  preload(){
+    const g=this.add.graphics();
+
+    /* PLATFORM — cyber HUD panel */
+    g.fillStyle(0x0d1720,1);
+    g.fillRoundedRect(0,0,100,20,3);
+    g.lineStyle(2,0x35b8ff,1);
+    g.strokeRoundedRect(1,1,98,18,3);
+    g.lineStyle(1,0x8ee6ff,.35);
+    g.lineBetween(8,15,92,15);
+    g.generateTexture('platform',100,20);
+    g.clear();
+
+    /* NINJA — compact neon runner */
+    g.fillStyle(0x101a25,1);
+    g.fillRoundedRect(4,3,20,34,5);
+    g.lineStyle(2,0x35b8ff,1);
+    g.strokeRoundedRect(4,3,20,34,5);
+    g.fillStyle(0x35b8ff,1);
+    g.fillRect(8,10,12,3);
+    g.fillStyle(0xffd54a,1);
+    g.fillRect(18,10,3,2);
+    g.fillStyle(0xff2638,1);
+    g.fillRect(9,29,10,3);
+    g.generateTexture('ninja',28,40);
+    g.clear();
+
+    /* DRONE — glowing hostile node */
+    g.fillStyle(0x120f18,1);
+    g.fillCircle(12,12,10);
+    g.lineStyle(2,0xff3d5a,1);
+    g.strokeCircle(12,12,9);
+    g.fillStyle(0xff3d5a,1);
+    g.fillCircle(12,12,4);
+    g.fillStyle(0xffd54a,1);
+    g.fillCircle(12,12,1.5);
+    g.generateTexture('drone',24,24);
+    g.clear();
+  }
+
+  create(){
+    this.score=0;
+    this.isGameOver=false;
+    this.canJump=false;
+    this.best=Number(localStorage.getItem(RUNNER_BEST_KEY)||0);
+
+    this.cameras.main.setBackgroundColor('#070b11');
+
+    /* BACKGROUND — cyber grid + distant skyline */
+    for(let x=0;x<=360;x+=30){
+      this.add.line(0,0,x,0,x,640,0x35b8ff,.055).setOrigin(0);
+    }
+    for(let y=0;y<=640;y+=32){
+      this.add.line(0,0,0,y,360,y,0x35b8ff,.045).setOrigin(0);
+    }
+
+    for(let i=0;i<12;i++){
+      const bx=i*34+5;
+      const bh=Phaser.Math.Between(35,105);
+      this.add.rectangle(bx,610-bh/2,28,bh,0x0b121a,.9);
+      this.add.line(0,0,bx,610-bh,bx+28,610-bh,0x263b4b,.55).setOrigin(0);
+    }
+
+    this.add.text(18,12,'CYBER // RUNNER',{
+      font:'bold 9px Courier New',
+      color:'#7edcff',
+      letterSpacing:1
+    });
+
+    this.add.rectangle(18,36,324,1,0x35b8ff,.18);
+
+    this.add.rectangle(20,50,138,42,0x09121a,.9);
+    this.add.rectangle(202,50,138,42,0x09121a,.9);
+    this.add.rectangle(20,50,138,42,0x35b8ff,0).setStrokeStyle(1,0x2d5368,.8);
+    this.add.rectangle(202,50,138,42,0xffd54a,0).setStrokeStyle(1,0x5e5430,.8);
+
+    this.add.text(30,57,'SCORE',{
+      font:'bold 7px Courier New',
+      color:'#6d8291'
+    });
+
+    this.scoreText=this.add.text(30,69,'0',{
+      font:'bold 17px Courier New',
+      color:'#35b8ff'
+    });
+
+    this.add.text(212,57,'BEST',{
+      font:'bold 7px Courier New',
+      color:'#8d8060'
+    });
+
+    this.bestText=this.add.text(212,69,String(this.best),{
+      font:'bold 17px Courier New',
+      color:'#ffd54a'
+    });
+
+    this.add.text(292,18,'● ONLINE',{
+      font:'bold 6px Courier New',
+      color:'#42d68b'
+    });
+
+    this.platforms=this.physics.add.group({
+      immovable:true,
+      allowGravity:false
+    });
+
+    const firstPlat=this.platforms.create(180,500,'platform');
+    firstPlat.setDisplaySize(300,20);
+
+    this.player=this.physics.add.sprite(180,400,'ninja');
+    this.player.setBounce(.1);
+    this.player.setCollideWorldBounds(true);
+    this.player.body.setGravityY(800);
+
+    this.physics.add.collider(this.player,this.platforms,()=>{
+      this.canJump=true;
+    });
+
+    this.obstacles=this.physics.add.group();
+
+    this.input.on('pointerdown',()=>{
+      if(this.isGameOver){
+        this.scene.restart();
+        return;
+      }
+
+      if(this.canJump||this.player.body.touching.down){
+        this.player.setVelocityY(-450);
+        this.canJump=false;
+        if(tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      }
+    });
+
+    this.time.addEvent({
+      delay:1500,
+      callback:this.spawnObjects,
+      callbackScope:this,
+      loop:true
+    });
+  }
+
+  spawnObjects(){
+    if(this.isGameOver)return;
+
+    const x=400;
+    const y=Phaser.Math.Between(300,550);
+
+    const plat=this.platforms.create(x,y,'platform');
+    plat.setVelocityX(-200);
+    plat.setImmovable(true);
+
+    if(Math.random()>.4){
+      const drone=this.obstacles.create(x,y-50,'drone');
+      drone.setVelocityX(-200);
+      drone.body.allowGravity=false;
+    }
+
+    this.score+=10;
+    this.scoreText.setText('SCORE: '+this.score);
+
+    if(this.score>this.best){
+      this.best=this.score;
+      this.bestText.setText('BEST: '+this.best);
+      localStorage.setItem(RUNNER_BEST_KEY,String(this.best));
+    }
+  }
+
+  update(){
+    if(this.isGameOver)return;
+
+    if(this.player.y>700){
+      this.gameOver();
+      return;
+    }
+
+    this.physics.overlap(this.player,this.obstacles,()=>{
+      this.gameOver();
+    });
+
+    this.platforms.getChildren().forEach(plat=>{
+      if(plat.x<-100)plat.destroy();
+    });
+
+    this.obstacles.getChildren().forEach(obs=>{
+      if(obs.x<-50)obs.destroy();
+    });
+  }
+
+  gameOver(){
+    if(this.isGameOver)return;
+
+    this.isGameOver=true;
+    this.physics.pause();
+    this.player.setTint(0xff2638);
+
+    if(this.score>this.best){
+      this.best=this.score;
+      localStorage.setItem(RUNNER_BEST_KEY,String(this.best));
+    }
+
+    try{
+      if(window.ArcadeCore?.setRunnerBest){
+        ArcadeCore.setRunnerBest(this.best);
+      }
+    }catch(e){}
+
+    if(tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+
+    const cx=this.scale.width/2;
+    const cy=this.scale.height/2;
+
+    this.add.rectangle(cx,cy,292,168,0x070c13,.96)
+      .setStrokeStyle(2,0xff3d5a,.9);
+
+    this.add.rectangle(cx,cy-55,220,1,0xff3d5a,.45);
+    this.add.rectangle(cx,cy+55,220,1,0xff3d5a,.45);
+
+    this.add.text(
+      cx,
+      cy-38,
+      'SYSTEM FAILURE',
+      {
+        font:'bold 9px Courier New',
+        color:'#7f8d98',
+        align:'center',
+        letterSpacing:2
+      }
+    ).setOrigin(.5);
+
+    this.add.text(
+      cx,
+      cy-10,
+      'GAME OVER',
+      {
+        font:'bold 25px Courier New',
+        color:'#ff3d5a',
+        align:'center',
+        stroke:'#210810',
+        strokeThickness:5
+      }
+    ).setOrigin(.5);
+
+    this.add.text(
+      cx,
+      cy+28,
+      'TAP TO RESTART',
+      {
+        font:'bold 10px Courier New',
+        color:'#d7e2e8',
+        align:'center'
+      }
+    ).setOrigin(.5);
+
+    this.add.text(
+      cx,
+      cy+48,
+      'SCORE  '+this.score+'   •   BEST  '+this.best,
+      {
+        font:'7px Courier New',
+        color:'#35b8ff',
+        align:'center'
+      }
+    ).setOrigin(.5);
+  }
+}
+
+const config={
+  type:Phaser.AUTO,
+  width:360,
+  height:640,
+  parent:'game-container',
+  physics:{
+    default:'arcade',
+    arcade:{
+      gravity:{y:0},
+      debug:false
+    }
+  },
+  scene:CyberGame
+};
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>
