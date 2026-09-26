@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FREEzzz Arcade — 8-Bit Racing</title>
+<script src="arcade_core.js"></script>
+<style>
+:root{--bg:#05070b;--line:#52606c;--red:#ff2638;--blue:#35b8ff;--green:#39e879;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow:hidden}
+body{display:flex;justify-content:center;align-items:center}
+.page{width:100%;max-width:620px;height:100dvh;padding:8px;display:flex;flex-direction:column;gap:8px;background:radial-gradient(circle at 50% -10%,rgba(53,184,255,.16),transparent 34%),linear-gradient(180deg,#0b1118 0%,#05070b 62%,#020304 100%);position:relative}
+.page:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px);opacity:.35}
+.head,.racing-card,.footer{position:relative;z-index:1}
+.head{min-height:48px;display:flex;align-items:center;border-bottom:1px solid #26323d;padding-bottom:6px}
+.home{width:44px;height:38px;border-radius:7px;border:1px solid #65727e;background:linear-gradient(#26323c,#111820);color:#fff;font-size:20px;box-shadow:inset 0 1px 0 #ffffff22,0 3px 8px #0008}
+.title{flex:1;text-align:center;font-size:13px;font-weight:950;letter-spacing:.5px;text-shadow:0 0 10px #35b8ff44;padding-right:44px}
+.racing-card{flex:1;min-height:0;border:1px solid var(--line);border-radius:10px;background:linear-gradient(145deg,rgba(31,42,52,.98),rgba(8,13,18,.98));box-shadow:inset 0 1px 0 #ffffff14,0 8px 22px #0009;padding:9px;display:flex;flex-direction:column;gap:6px}
+.racing-head{text-align:center;border-bottom:1px solid #293641;padding-bottom:6px}
+.kicker{color:var(--blue);font-size:8px;font-weight:950;letter-spacing:1px}
+.racing-title{margin:3px 0 0;font-size:18px;font-weight:950;letter-spacing:1px}
+.race-stats{display:flex;justify-content:space-around;color:var(--gold);font-size:8px;font-weight:900;margin-top:4px}
+.race-wrap{flex:1;min-height:0;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;border:2px solid #252f38;border-radius:7px;background:#071019}
+#raceCanvas{width:min(100%,360px);height:auto;max-height:100%;image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+.race-hud{position:absolute;top:6px;left:7px;right:7px;display:flex;justify-content:space-between;pointer-events:none}
+.race-hud-item{background:#05070bd9;border:1px solid var(--line);border-radius:4px;padding:4px 6px;color:#fff;font:900 7px monospace}
+.race-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.steer-controls,.pedal-controls{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.race-btn{min-height:48px;border:1px solid #65727e;border-radius:7px;background:linear-gradient(#27343f,#111920);color:#fff;font-size:20px;font-weight:950;box-shadow:inset 0 1px 0 #ffffff18,0 3px 8px #0008;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.race-btn small{display:block;font-size:5px;letter-spacing:.6px;margin-top:1px}
+.race-btn.gas{border-color:#3caa6d}.race-btn.brake{border-color:#a94750}.race-btn:active,.race-btn.pressed{transform:translateY(1px);background:#263d4b}
+.race-actions{display:grid;grid-template-columns:2fr 1fr;gap:6px}
+.start{width:100%;height:43px;border-radius:7px;border:1px solid #52606c;color:#fff;background:linear-gradient(#27343f,#111920);font-size:9px;font-weight:950;letter-spacing:.5px}
+.primary{background:linear-gradient(135deg,#ff394a,#c91627);border-color:#ff5967;box-shadow:0 0 14px #ff263833,inset 0 1px 0 #ffffff22}
+.message{min-height:30px;text-align:center;color:var(--muted);font-size:8px;display:flex;align-items:center;justify-content:center}
+.footer{text-align:center;color:#66727e;font-size:6.5px;padding-top:4px;border-top:1px solid #202a33}
+@media(max-height:650px){.page{gap:5px;padding:6px}.racing-card{padding:6px;gap:4px}.race-btn{min-height:40px}.race-stats{font-size:7px}.race-hud-item{font-size:6px;padding:3px 5px}}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="head"><button class="home" onclick="location.href='arcade.html'" aria-label="Назад">⌂</button><div class="title">⚡ FREEzzz ARCADE — RACING</div></div>
+<section class="racing-card">
+<div class="racing-head"><div class="kicker">🏎️ ARCADE MODE</div><h1 class="racing-title">8-BIT ROAD RACER</h1><div class="race-stats"><span id="raceSpeed">SPEED 0</span><span id="raceDistance">DIST 0</span><span>BEST <b id="raceBest">0</b></span></div></div>
+<div class="race-wrap"><canvas id="raceCanvas" width="360" height="430" aria-label="8-bit гоночная трасса"></canvas><div class="race-hud"><div class="race-hud-item">🏁 <span id="raceLap">LAP 1</span></div><div class="race-hud-item">⭐ <span id="raceScore">0</span></div></div></div>
+<div class="race-controls"><div class="steer-controls"><button class="race-btn" id="leftBtn" type="button">◀</button><button class="race-btn" id="rightBtn" type="button">▶</button></div><div class="pedal-controls"><button class="race-btn gas" id="gasBtn" type="button">⛽<small>ГАЗ</small></button><button class="race-btn brake" id="brakeBtn" type="button">🛑<small>ТОРМОЗ</small></button></div></div>
+<div class="race-actions"><button class="start primary" id="raceStart" type="button">СТАРТ ГОНКИ</button><button class="start" id="raceReset" type="button">ЗАНОВО</button></div>
+<div class="message" id="raceMsg">Нажми «СТАРТ ГОНКИ»</div>
+</section>
+<div class="footer">Tube Empire • FREEzzzGames Arcade</div>
+</main>
+<script>
+const race={running:false,x:180,speed:0,distance:0,score:0,laneOffset:0,obstacles:[],spawn:0,last:0,raf:0,keys:{left:false,right:false,gas:false,brake:false}};
+const raceCanvas=document.getElementById('raceCanvas');const ctx=raceCanvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+function best(){return ArcadeCore.getRacingBest()||0}
+function updateBest(){document.getElementById('raceBest').textContent=best()}
+function setRaceButton(id,key){const b=document.getElementById(id);const down=e=>{e.preventDefault();race.keys[key]=true;b.classList.add('pressed')};const up=e=>{e.preventDefault();race.keys[key]=false;b.classList.remove('pressed')};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('pointerleave',up)}
+setRaceButton('leftBtn','left');setRaceButton('rightBtn','right');setRaceButton('gasBtn','gas');setRaceButton('brakeBtn','brake');
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')race.keys.left=true;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')race.keys.right=true;if(e.key==='ArrowUp'||e.key.toLowerCase()==='w')race.keys.gas=true;if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')race.keys.brake=true});
+window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')race.keys.left=false;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')race.keys.right=false;if(e.key==='ArrowUp'||e.key.toLowerCase()==='w')race.keys.gas=false;if(e.key==='ArrowDown'||e.key.toLowerCase()==='s')race.keys.brake=false});
+function drawPixelCar(x,y,player=false){ctx.fillStyle=player?'#e52b3a':'#35b8ff';ctx.fillRect(x-10,y-15,20,30);ctx.fillStyle=player?'#ff6a72':'#8be0ff';ctx.fillRect(x-7,y-10,14,9);ctx.fillStyle='#101820';ctx.fillRect(x-6,y-7,12,5);ctx.fillStyle='#111';ctx.fillRect(x-13,y-10,4,8);ctx.fillRect(x+9,y-10,4,8);ctx.fillRect(x-13,y+5,4,8);ctx.fillRect(x+9,y+5,4,8);ctx.fillStyle='#ffd54a';ctx.fillRect(x-7,y-15,4,3);ctx.fillRect(x+3,y-15,4,3)}
+function drawRace(){const w=raceCanvas.width,h=raceCanvas.height;ctx.fillStyle='#0b2a18';ctx.fillRect(0,0,w,h);ctx.fillStyle='#164426';for(let y=0;y<h;y+=16){ctx.fillRect(0,y,72,8);ctx.fillRect(w-72,y,72,8)}ctx.fillStyle='#34383d';ctx.fillRect(72,0,w-144,h);ctx.fillStyle='#262b30';ctx.fillRect(82,0,6,h);ctx.fillRect(w-88,0,6,h);const stripe=Math.floor(race.laneOffset)%32;for(let y=-32+stripe;y<h;y+=32){ctx.fillStyle='#f5f7fa';ctx.fillRect(61,y,11,16);ctx.fillRect(w-72,y,11,16);ctx.fillStyle='#ff2638';ctx.fillRect(61,y+16,11,16);ctx.fillRect(w-72,y+16,11,16)}ctx.fillStyle='#d9dde0';for(let lane=1;lane<3;lane++){const x=72+lane*72;for(let y=-30+stripe;y<h;y+=42)ctx.fillRect(x-2,y,4,22)}for(const o of race.obstacles)drawPixelCar(o.x,o.y,false);drawPixelCar(race.x,h-72,true)}
+function spawnObstacle(){const lane=72+36+Math.floor(Math.random()*3)*72;race.obstacles.push({x:lane,y:-35})}
+function resetRace(){cancelAnimationFrame(race.raf);race.running=false;race.x=180;race.speed=0;race.distance=0;race.score=0;race.laneOffset=0;race.obstacles=[];race.spawn=0;document.getElementById('raceSpeed').textContent='SPEED 0';document.getElementById('raceDistance').textContent='DIST 0';document.getElementById('raceScore').textContent='0';document.getElementById('raceLap').textContent='LAP 1';document.getElementById('raceMsg').textContent='Нажми «СТАРТ ГОНКИ»';updateBest();drawRace()}
+function startRace(){if(race.running)return;race.running=true;race.last=performance.now();document.getElementById('raceMsg').textContent='Гонка началась!';cancelAnimationFrame(race.raf);race.raf=requestAnimationFrame(raceLoop)}
+function endRace(){race.running=false;race.speed=0;const finalScore=Math.floor(race.distance*10);race.score=finalScore;const old=best();if(finalScore>old)ArcadeCore.setRacingBest(finalScore);updateBest();document.getElementById('raceMsg').textContent='💥 АВАРИЯ! Счёт: '+finalScore+' • Нажми «ЗАНОВО».'}
+function raceLoop(now){if(!race.running)return;const dt=Math.min((now-race.last)/1000,.035);race.last=now;if(race.keys.gas)race.speed=Math.min(9,race.speed+12*dt);else race.speed=Math.max(2.2,race.speed-4*dt);if(race.keys.brake)race.speed=Math.max(0,race.speed-18*dt);if(race.keys.left)race.x-=145*dt;if(race.keys.right)race.x+=145*dt;race.x=Math.max(100,Math.min(260,race.x));race.distance+=race.speed*dt;race.score=Math.floor(race.distance*10);race.laneOffset+=race.speed*32*dt;race.spawn-=dt;if(race.spawn<=0){spawnObstacle();race.spawn=Math.max(.38,1.25-race.speed*.06)}for(const o of race.obstacles)o.y+=race.speed*38*dt;race.obstacles=race.obstacles.filter(o=>o.y<470);const playerY=raceCanvas.height-72;for(const o of race.obstacles){if(Math.abs(o.x-race.x)<23&&Math.abs(o.y-playerY)<34){endRace();drawRace();return}}drawRace();document.getElementById('raceSpeed').textContent='SPEED '+Math.round(race.speed*12);document.getElementById('raceDistance').textContent='DIST '+Math.floor(race.distance);document.getElementById('raceScore').textContent=race.score;document.getElementById('raceLap').textContent='LAP '+(1+Math.floor(race.distance/500));race.raf=requestAnimationFrame(raceLoop)}
+document.getElementById('raceStart').addEventListener('click',startRace);document.getElementById('raceReset').addEventListener('click',resetRace);resetRace();
+</script>
+</body>
+</html>
