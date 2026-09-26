@@ -1,0 +1,15 @@
+(function(){'use strict';
+  const E=window.GameEconomy||{};
+  const core=window.Core;
+  E.update=now=>core?core.sync():{income:0,energy:0,elapsed:0};
+  E.addMoney=v=>core?core.addMoney(v):false;
+  E.spendMoney=v=>core?core.spendMoney(v):false;
+  E.canAfford=v=>core?core.getMoney()>=Number(v):false;
+  E.getMoney=()=>core?core.getMoney():0;
+  E.getEnergy=()=>core?core.getEnergy():0;
+  E.getIncomePerSecond=()=>core?core.getTotalCorporationIncome():0;
+  E.getEnergyPerSecond=()=>Number(GameState.get('economy.energyPerSecond',0))||0;
+  E.getTrendMultiplier=()=>1;
+  E.getTotalCorporationIncome=()=>core?core.getTotalCorporationIncome():0;
+  window.GameEconomy=E; window.Economy=E;
+})();
