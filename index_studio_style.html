@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tube Empire — Главное меню</title>
+<script src="core.js"></script>
+<script src="economy.js"></script>
+<script src="game-logic.js"></script>
+<style>:root{
+  --bg:#05070b;
+  --p-bg:linear-gradient(180deg,#111820 0%,#0b1016 52%,#070a0e 100%);
+  --panel:#10151c;
+  --panel2:#171e27;
+  --panel3:#202a35;
+  --b-col:#394552;
+  --acc:#ff2638;
+  --acc2:#ff5967;
+  --acc-glow:rgba(255,38,56,.42);
+  --t-col:#ffd54a;
+  --green:#39e879;
+  --blue:#35b8ff;
+  --txt:#f5f7fa;
+  --sub:#8995a4;
+  --btn:linear-gradient(180deg,#202a35,#12181f);
+  --steel:linear-gradient(180deg,#252f39,#12181f);
+}
+[data-theme="rose"]{
+  --bg:#08070b;
+  --p-bg:linear-gradient(180deg,#1a1720 0%,#100d15 55%,#08090d 100%);
+  --panel:#17151c;--panel2:#211d26;--panel3:#302936;
+  --b-col:#514b58;--acc:#ff3b55;--acc2:#ff7180;--acc-glow:rgba(255,59,85,.4);
+  --t-col:#ffd85a;--green:#43e987;--blue:#55c4ff;--txt:#f7f7fa;--sub:#a29eaa;
+  --btn:linear-gradient(180deg,#292530,#151219);--steel:linear-gradient(180deg,#302b36,#17141c);
+}
+[data-theme="light"]{
+  --bg:#8f99a3;
+  --p-bg:linear-gradient(180deg,#d5dbe0 0%,#c1c9d0 52%,#aeb7c0 100%);
+  --panel:#cbd2d8;--panel2:#dce1e5;--panel3:#b7c0c8;
+  --b-col:#5d6973;--acc:#d52339;--acc2:#ed5262;--acc-glow:rgba(213,35,57,.24);
+  --t-col:#806000;--green:#168447;--blue:#0879b7;--txt:#182028;--sub:#4b5963;
+  --btn:linear-gradient(180deg,#e0e5e8,#c3cbd1);--steel:linear-gradient(180deg,#e7eaed,#c1c8ce);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:Arial,system-ui,sans-serif;transition:background .25s,color .25s}
+body{padding:0;display:flex;justify-content:center;align-items:center;position:fixed;inset:0}
+button{font:inherit;color:inherit;cursor:pointer}
+.portal{
+  width:100%;height:100%;max-width:420px;max-height:100vh;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-start;gap:7px;padding:8px 10px 7px;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(50,63,76,.55) 0%,rgba(17,23,30,.18) 34%,transparent 58%),
+    var(--p-bg);
+  border:0;border-radius:0;box-shadow:inset 0 0 90px rgba(0,0,0,.42);
+  text-align:center;
+}
+.portal:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:34px 34px}
+.portal:after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 100px rgba(0,0,0,.5)}
+.portal>*{position:relative;z-index:1}
+.top-bar{display:flex;justify-content:flex-end;gap:5px;height:32px;flex:none;border-bottom:1px solid #252e38;padding-bottom:5px}
+.top-btn{min-width:64px;height:27px;padding:0 8px;background:var(--steel);border:1px solid var(--b-col);color:var(--txt);border-radius:5px;font-size:8px;font-weight:950;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 10px rgba(0,0,0,.35)}
+.top-btn:active{transform:scale(.96);border-color:var(--acc2)}
+.logo-container{display:flex;flex-direction:column;align-items:center;gap:2px;margin:2px 0 3px}
+.logo-icon{width:44px;height:44px;background:radial-gradient(circle at 35% 30%,#ff5967 0%,#ff2638 48%,#8d101d 100%);border:2px solid #f5f7fa;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:18px;box-shadow:0 0 18px var(--acc-glow),0 5px 12px rgba(0,0,0,.45)}
+.game-title{font-size:18px;font-weight:1000;color:var(--txt);text-shadow:0 2px 10px #000;letter-spacing:1px;margin:0}.game-title::first-letter{color:var(--txt)}
+.game-subtitle{font-size:7px;color:var(--sub);text-transform:uppercase;letter-spacing:1.8px;margin:0}
+.profile-card{background:linear-gradient(180deg,rgba(23,30,39,.96),rgba(13,18,24,.98));border:1px solid var(--b-col);border-left:4px solid var(--acc);border-radius:7px;padding:9px 10px;display:flex;align-items:center;gap:10px;text-align:left;box-shadow:inset 0 1px rgba(255,255,255,.06),0 6px 14px rgba(0,0,0,.35)}
+.avatar-box{width:43px;height:43px;background:linear-gradient(180deg,#202a35,#11171d);border:1px solid #4b5864;border-radius:5px;display:flex;justify-content:center;align-items:center;font-size:21px;flex-shrink:0;overflow:hidden;box-shadow:inset 0 1px #fff1}
+.profile-info{display:flex;flex-direction:column;gap:3px;overflow:hidden}.profile-name{font-size:11px;font-weight:950;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.profile-stats{font-size:8px;color:var(--sub)}
+.chat-widget{background:linear-gradient(180deg,rgba(20,27,35,.96),rgba(12,17,23,.98));border:1px solid #3d4853;border-radius:7px;padding:8px 10px;text-align:left;display:flex;flex-direction:column;gap:4px;max-height:74px;overflow:hidden;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.05),0 5px 12px rgba(0,0,0,.3)}
+.chat-widget:hover{border-color:var(--acc)}.chat-title{font-size:8px;color:var(--t-col);font-weight:950;text-transform:uppercase;display:flex;justify-content:space-between;letter-spacing:.4px}.chat-messages{font-size:8px;color:var(--sub);display:flex;flex-direction:column;gap:2px;overflow-y:auto}.chat-messages b{color:var(--txt)}
+.menu-nav{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:auto auto;gap:7px;margin:6px 0 0}
+.menu-btn{background:linear-gradient(180deg,#1b232c,#10161c);border:1px solid #3d4a56;border-radius:6px;padding:9px 10px;color:var(--txt);font-size:10px;font-weight:950;text-decoration:none;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.07),0 5px 12px rgba(0,0,0,.32);transition:transform .1s,border-color .1s,box-shadow .1s}
+.menu-btn:hover{border-color:#62717e}.menu-btn:active{transform:scale(.975);border-color:var(--acc);box-shadow:0 0 10px var(--acc-glow)}
+.menu-nav .studio-tile{grid-column:1 / -1;min-height:68px;justify-content:center;gap:10px;font-size:13px;background:linear-gradient(180deg,#ff3348,#d91f32);border:1px solid #ff6575;box-shadow:inset 0 1px rgba(255,255,255,.22),0 0 18px rgba(255,38,56,.25),0 7px 16px rgba(0,0,0,.35);text-shadow:0 1px 2px #7a101b}.menu-nav .studio-tile span:last-child{font-size:18px}.menu-nav .small-tile{min-height:61px;justify-content:center;padding:7px 5px;font-size:8.5px;text-align:center;flex-direction:column;gap:5px}.menu-nav .small-tile span:last-child{display:block;font-size:17px}.menu-nav .small-tile:nth-child(2){border-top:2px solid var(--blue)}.menu-nav .small-tile:nth-child(3){border-top:2px solid var(--green)}.menu-nav .small-tile:nth-child(4){border-top:2px solid var(--t-col)}
+.footer-info{margin-top:auto;font-size:7px;color:var(--sub);opacity:.78;padding-top:6px;border-top:1px solid #252e38}
+.modal-overlay{position:absolute;inset:0;background:rgba(3,6,9,.86);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}.modal-overlay.active{opacity:1;pointer-events:auto}.modal-content{background:linear-gradient(180deg,#18212a,#0c1117);border:1px solid var(--b-col);border-top:2px solid var(--acc);border-radius:8px;padding:14px;text-align:center;width:100%;max-width:300px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.55)}
+.modal-input{width:100%;background:#0b1015;border:1px solid #46535f;border-radius:5px;padding:8px;color:#fff;font-family:monospace;font-size:11px;outline:none;text-align:center}.modal-input::placeholder{color:var(--sub)}
+[data-theme="light"] .profile-card,[data-theme="light"] .chat-widget,[data-theme="light"] .modal-content{box-shadow:inset 0 1px rgba(255,255,255,.45),0 6px 16px rgba(0,0,0,.18)}
+[data-theme="light"] .menu-btn{background:linear-gradient(180deg,#e2e6e9,#c5cdd3)}
+[data-theme="light"] .studio-tile{color:#fff!important}
+</style>
+</head>
+<body>
+<div class="portal">
+  <div class="top-bar">
+    <button class="top-btn" onclick="toggleThemeUI()" id="themeBtn">🎨 ТЕМА</button>
+    <button class="top-btn" onclick="toggleSoundUI()" id="soundBtn">🔊 ЗВУК</button>
+    <button class="top-btn" onclick="Core.toggleLang();updateUI();Core.playSound('modal');" id="langBtn">🇷🇺 RU</button>
+  </div>
+
+  <div class="logo-container">
+    <div class="logo-icon">📺</div>
+    <h1 class="game-title">TUBE EMPIRE</h1>
+    <p class="game-subtitle" id="subTitle">Idle Streamer Tycoon</p>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar-box" id="avatarDisplay">👦</div>
+    <div class="profile-info">
+      <div class="profile-name" id="userName">Блогер</div>
+      <div class="profile-stats" id="userStats">Баланс: 0.00 €</div>
+    </div>
+  </div>
+
+  <div class="chat-widget" onclick="openChatModal()">
+    <div class="chat-title"><span id="chatHeaderTxt">💬 Глобальный чат (онлайн)</span><span>💬</span></div>
+    <div class="chat-messages" id="chatWidgetFeed">
+      <span><b>Alex:</b> Кто на каком тренде сейчас?</span>
+      <span><b>APTB_Leader:</b> Качайте холдинг!</span>
+    </div>
+  </div>
+
+  <div class="menu-nav">
+    <a href="game.html" class="menu-btn primary studio-tile">
+      <span id="btnStudio">🔴 ВОЙТИ В СТУДИЮ</span>
+      <span>▶</span>
+    </a>
+<a href="avatar.html" class="menu-btn small-tile">
+      <span id="btnAvatar">🎨 Кастомизация & Студия</span>
+      <span>👤</span>
+    </a>
+<a href="arcade.html" class="menu-btn small-tile"><span id="btnArcade">🕹️ Аркада</span><span>🕹️</span></a>
+    <a href="leaderboard.html" class="menu-btn small-tile">
+      <span id="btnRank">📊 Таблица Лидеров</span>
+      <span>🌐</span>
+    </a>
+  </div>
+
+  <div class="footer-info">Tube Empire v5.8 • Telegram Mini App</div>
+</div>
+
+<!-- Модальные окна -->
+<div class="modal-overlay" id="chatModal" onclick="closeChatModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div style="font-size:12px;font-weight:800;color:var(--t-col);" id="chatModalTitle">💬 ГЛОБАЛЬНЫЙ ЧАТ</div>
+    <div id="fullChatFeed" style="background:rgba(0,0,0,0.4);border:1px solid var(--b-col);border-radius:8px;padding:6px;height:120px;overflow-y:auto;text-align:left;font-size:8px;color:var(--sub);"></div>
+    <div style="display:flex;gap:4px;">
+      <input type="text" id="chatInputMsg" class="modal-input" placeholder="Сообщение...">
+      <button class="menu-btn primary" style="padding:6px 10px;" onclick="sendChatMessage()">💬</button>
+    </div>
+    <button class="top-btn" style="width:100%;padding:6px;" onclick="closeChatModal()" id="chatCloseBtn">ЗАКРЫТЬ</button>
+  </div>
+</div>
+
+
+<script>
+const langMap = {
+  ru: { sub: "Idle Streamer Tycoon", studio: "🔴 ВОЙТИ В СТУДИЮ", avatar: "🎨 Кастомизация", arcade: "🕹️ Аркада", rank: "📊 Таблица Лидеров", balance: "Баланс", chatTitle: "💬 Глобальный чат (онлайн)", chatModal: "💬 ГЛОБАЛЬНЫЙ ЧАТ", placeholder: "Сообщение...", close: "ЗАКРЫТЬ", theme: "🎨 ТЕМА", soundOn: "🔊 ЗВУК", soundOff: "🔇 ВЫКЛ", footer: "Tube Empire v5.8 • Telegram Mini App", demoAlex: "Кто на каком тренде сейчас?", demoLeader: "Качайте канал!" },
+  de: { sub: "Idle Streamer Tycoon", studio: "🔴 INS STUDIO", avatar: "🎨 Anpassung", arcade: "🕹️ Arcade", rank: "📊 Bestenliste", balance: "Guthaben", chatTitle: "💬 Globaler Chat (Online)", chatModal: "💬 GLOBALER CHAT", placeholder: "Nachricht...", close: "SCHLIESSEN", theme: "🎨 THEMA", soundOn: "🔊 TON", soundOff: "🔇 AUS", footer: "Tube Empire v5.8 • Telegram Mini App", demoAlex: "Wer ist gerade auf welchem Trend?", demoLeader: "Kanal ausbauen!" },
+  en: { sub: "Idle Streamer Tycoon", studio: "🔴 ENTER STUDIO", avatar: "🎨 Customization", arcade: "🕹️ Arcade", rank: "📊 Leaderboard", balance: "Balance", chatTitle: "💬 Global Chat (Online)", chatModal: "💬 GLOBAL CHAT", placeholder: "Message...", close: "CLOSE", theme: "🎨 THEME", soundOn: "🔊 SOUND", soundOff: "🔇 OFF", footer: "Tube Empire v5.8 • Telegram Mini App", demoAlex: "Who is riding which trend?", demoLeader: "Grow the channel!" }
+};
+
+let chatMessagesData = [];
+
+function playButtonSound(){
+  try { Core.playSound('click'); } catch(e) {}
+}
+
+function toggleThemeUI(){
+  try { Core.toggleTheme(); updateUI(); Core.playSound('modal'); } catch(e) {}
+}
+
+function toggleSoundUI(){
+  try {
+    const wasOn = Core.getSound();
+    const next = Core.toggleSound();
+    updateUI();
+    // When enabling sound, give immediate confirmation; when disabling, remain silent.
+    if(!wasOn && next) Core.playSound('modal');
+  } catch(e) {}
+}
+
+function syncDemoChat(t){
+  const custom = chatMessagesData.filter(m => !m.demo);
+  chatMessagesData = [
+    {user:"Alex", text:t.demoAlex, demo:true},
+    {user:"APTB_Leader", text:t.demoLeader, demo:true},
+    ...custom
+  ];
+}
+
+function updateUI() {
+  let lang = Core.getLang(), t = langMap[lang] || langMap.ru;
+  syncDemoChat(t);
+  document.getElementById('subTitle').textContent = t.sub;
+  document.getElementById('btnStudio').textContent = t.studio;
+  document.getElementById('btnAvatar').textContent = t.avatar;
+  if(document.getElementById('btnArcade')) document.getElementById('btnArcade').textContent = t.arcade || "🕹️ Arcade";
+  document.getElementById('btnRank').textContent = t.rank;
+  document.getElementById('chatHeaderTxt').textContent = t.chatTitle;
+  document.getElementById('chatModalTitle').textContent = t.chatModal;
+  document.getElementById('chatInputMsg').placeholder = t.placeholder;
+  document.getElementById('chatCloseBtn').textContent = t.close;
+  document.getElementById('themeBtn').textContent = t.theme;
+  document.getElementById('soundBtn').textContent = Core.getSound() ? t.soundOn : t.soundOff;
+  document.querySelector('.footer-info').textContent = t.footer;
+
+  document.getElementById('langBtn').textContent = lang === 'ru' ? '🇷🇺 RU' : (lang === 'de' ? '🇩🇪 DE' : '🇬🇧 EN');
+
+  document.getElementById('userName').textContent = Core.getUserName("Блогер");
+  document.getElementById('userStats').textContent = `${t.balance}: ${Core.getMoney().toLocaleString('ru-RU', {maximumFractionDigits:2})} €`;
+  document.getElementById('avatarDisplay').textContent = Core.getAvatarString();
+
+  Core.applyTheme(Core.getTheme());
+  renderChatFeeds();
+}
+
+function renderChatFeeds() {
+  let html = chatMessagesData.map(m => `<span><b>${m.user}:</b> ${m.text}</span>`).join('');
+  document.getElementById('chatWidgetFeed').innerHTML = html;
+  let f = document.getElementById('fullChatFeed'); if(f) f.innerHTML = html;
+}
+
+function openChatModal() { document.getElementById('chatModal').classList.add('active'); Core.playSound('modal'); }
+function closeChatModal() { document.getElementById('chatModal').classList.remove('active'); }
+function sendChatMessage() {
+  let inp = document.getElementById('chatInputMsg'), txt = inp.value.trim();
+  if(!txt) return;
+  chatMessagesData.push({user: Core.getUserName("Streamer"), text: txt});
+  inp.value = ""; Core.playSound('click'); renderChatFeeds();
+}
+
+
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest('button, a, input[type="button"], input[type="submit"]');
+  if(!el || el.disabled) return;
+  if(el.id === 'soundBtn' || el.id === 'themeBtn') return;
+  playButtonSound();
+}, {passive:true});
+
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const el = document.activeElement;
+  if(!el || !el.matches('button, a, input[type="button"], input[type="submit"]')) return;
+  if(el.id === 'soundBtn' || el.id === 'themeBtn') return;
+  playButtonSound();
+});
+
+document.addEventListener("DOMContentLoaded", () => updateUI());
+</script>
+</body>
+</html>
