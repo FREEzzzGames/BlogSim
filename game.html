@@ -662,7 +662,7 @@ const subs=()=>Number(GameState.get("channel.subscribers",0))||0;
 const xp=()=>Number(GameState.get("channel.xp",0))||0;
 const equip=()=>Object.keys(items).reduce((a,k)=>a+(GameState.get("upgrades.shop_"+k,0)?items[k].power:0),0);
 const viral=()=>Number(GameState.get("channel.viralUntil",0))>Date.now()?2:1;
-const income=()=>subs()/1000*viral();
+const income=()=>Number(GameEconomy.getIncomePerSecond?.()||0);
 
 const rank=l=>l>=20?"👑 "+tr("imperator"):
 l>=15?"💎 "+tr("mediaBoss"):
@@ -841,9 +841,7 @@ applyLanguage();
 render();
 
 setInterval(()=>{
-let s=state();
-if(s.player.energy<100)s.player.energy++;
-if(income()>0)GameEconomy.addMoney(income());
+GameEconomy.update(Date.now());
 render();
 save();
 },1000);
