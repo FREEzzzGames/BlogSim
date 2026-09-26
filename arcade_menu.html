@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>FREEzzz Arcade</title>
+<style>
+:root{--bg:#05070b;--line:#46535e;--blue:#35b8ff;--text:#f5f7fa;--muted:#8995a4}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;overflow:hidden}
+body{display:flex;justify-content:center;align-items:center}
+.page{width:100%;max-width:620px;height:100dvh;padding:10px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(circle at 50% -10%,rgba(53,184,255,.16),transparent 34%),linear-gradient(180deg,#0b1118 0%,#05070b 62%,#020304 100%);position:relative}
+.page:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 4px);opacity:.35}
+.head,.content,.footer{position:relative;z-index:1}.head{min-height:48px;display:flex;align-items:center;border-bottom:1px solid #26323d;padding-bottom:6px}.home{width:44px;height:38px;border-radius:7px;border:1px solid #65727e;background:linear-gradient(#26323c,#111820);color:#fff;font-size:20px}.title{flex:1;text-align:center;padding-right:44px;font-size:14px;font-weight:950;letter-spacing:1px;text-shadow:0 0 10px #35b8ff44}
+.content{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10px}.kicker{text-align:center;color:var(--blue);font-size:9px;font-weight:950;letter-spacing:1.5px}.subtitle{text-align:center;color:var(--muted);font-size:8px;margin:2px 0 8px}.games{display:grid;gap:8px}.game{width:100%;min-height:82px;border:1px solid var(--line);border-radius:9px;background:linear-gradient(145deg,rgba(31,42,52,.98),rgba(8,13,18,.98));color:#fff;text-align:left;padding:12px;display:flex;align-items:center;gap:12px;box-shadow:inset 0 1px 0 #ffffff14,0 6px 16px #0009;text-decoration:none}.game:active{transform:translateY(1px)}.icon{width:48px;height:48px;flex:none;border:1px solid #52606c;border-radius:7px;background:#0d141b;display:flex;align-items:center;justify-content:center;font-size:25px}.name{font-size:11px;font-weight:950;letter-spacing:.5px}.desc{font-size:7px;color:var(--muted);margin-top:4px;line-height:1.4}.arrow{margin-left:auto;color:var(--blue);font-size:20px}.dev{margin-top:2px;padding:10px;border:1px dashed #46535e;border-radius:8px;text-align:center;background:#0b1117}.dev-title{font-size:8px;font-weight:950;color:#c9d0d7}.dev-text{font-size:6.5px;color:#66727e;margin-top:3px}.footer{text-align:center;color:#66727e;font-size:6.5px;padding-top:5px;border-top:1px solid #202a33}
+</style>
+</head>
+<body>
+<main class="page">
+<div class="head"><button class="home" onclick="location.href='index.html'" aria-label="На главную">⌂</button><div class="title">⚡ FREEzzz ARCADE</div></div>
+<section class="content"><div><div class="kicker">ARCADE CENTER</div><div class="subtitle">Выбери мини-игру</div></div>
+<div class="games">
+<a class="game" href="reaction.html"><div class="icon">⚡</div><div><div class="name">REACTION</div><div class="desc">Проверь скорость реакции и установи личный рекорд.</div></div><div class="arrow">›</div></a>
+<a class="game" href="racing.html"><div class="icon">🏎️</div><div><div class="name">8-BIT RACING</div><div class="desc">Простая пиксельная гонка с управлением на экране.</div></div><div class="arrow">›</div></a>
+<div class="dev"><div class="dev-title">🕹️ ТРЕТЬЯ АРКАДА — В РАЗРАБОТКЕ</div><div class="dev-text">Новая независимая мини-игра появится здесь позже.</div></div>
+</div></section>
+<div class="footer">Tube Empire • FREEzzzGames Arcade</div>
+</main>
+</body>
+</html>
