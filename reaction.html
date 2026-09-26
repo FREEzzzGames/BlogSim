@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>FREEzzz Arcade — Reaction</title>
-<script src="arcade_core.js"></script>
+<script src="core.js"></script><script src="arcade_core.js"></script>
 <style>
 :root{--bg:#05070b;--panel:#111820;--line:#52606c;--blue:#35b8ff;--green:#39e879;--gold:#ffd54a;--text:#f5f7fa;--muted:#8995a4}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -18,10 +18,11 @@ body{display:flex;justify-content:center;align-items:center}
 .title{flex:1;text-align:center;padding-right:44px;font-size:14px;font-weight:950;letter-spacing:1px;text-shadow:0 0 10px #35b8ff44}
 .card{flex:1;min-height:0;border:1px solid var(--line);border-radius:10px;background:linear-gradient(145deg,rgba(31,42,52,.98),rgba(8,13,18,.98));box-shadow:inset 0 1px 0 #ffffff14,0 8px 22px #0009;padding:12px;display:flex;flex-direction:column}
 .headline{text-align:center;border-bottom:1px solid #293641;padding-bottom:9px}.kicker{color:var(--blue);font-size:8px;font-weight:950;letter-spacing:1px}.game-title{margin:3px 0 0;font-size:19px;font-weight:950;letter-spacing:1px}.record{text-align:center;color:var(--gold);font-size:9px;font-weight:900;margin-top:5px}
-.area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}.react{width:min(54vw,210px);height:min(54vw,210px);min-width:170px;min-height:170px;max-width:210px;max-height:210px;border-radius:50%;border:3px solid var(--blue);background:radial-gradient(circle at 35% 25%,#26394b,#0d1722 58%,#071019);color:#fff;font-size:11px;line-height:1.35;font-weight:950;letter-spacing:.4px;padding:28px;box-shadow:inset 0 2px 0 #ffffff1a,0 0 0 6px #35b8ff0b,0 0 25px #35b8ff22,0 12px 25px #000b;touch-action:manipulation;user-select:none;transition:transform .08s,box-shadow .15s,border-color .15s,background .15s}.react:active{transform:scale(.97)}
+.area{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}.react{width:min(54vw,210px);height:min(54vw,210px);min-width:170px;min-height:170px;max-width:210px;max-height:210px;border-radius:50%;border:3px solid var(--reaction-edge,#f5f7fa);background:radial-gradient(circle at 35% 25%,#26394b,#0d1722 58%,#071019);color:#fff;font-size:11px;line-height:1.35;font-weight:950;letter-spacing:.4px;padding:28px;box-shadow:inset 0 2px 0 #ffffff1a,0 0 0 6px var(--reaction-glow,#ffffff22),0 0 25px var(--reaction-glow,#ffffff22),0 12px 25px #000b;touch-action:manipulation;user-select:none;transition:transform .08s,box-shadow .15s,border-color .15s,background .15s}.react:active{transform:scale(.97)}
 .react.go{background:radial-gradient(circle at 35% 25%,#1f6842,#0d2c1d 58%,#071b12);border-color:var(--green);box-shadow:inset 0 2px 0 #ffffff1a,0 0 0 8px #39e87914,0 0 35px #39e87966,0 12px 25px #000b}
 .result{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.55);font-size:42px;line-height:1;font-weight:1000;color:#fff;text-shadow:0 0 12px #35b8ff99,0 3px 10px #000;opacity:0;pointer-events:none;z-index:5}.result.show{animation:pop .72s cubic-bezier(.16,.8,.24,1) forwards}@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:1}100%{opacity:1;transform:translate(-50%,-50%) translateY(-78px) scale(1.18)}}
-.msg{min-height:46px;text-align:center;color:var(--muted);font-size:8px;display:flex;align-items:center;justify-content:center}.start{width:100%;height:43px;border-radius:7px;border:1px solid #52606c;color:#fff;font-size:9px;font-weight:950;letter-spacing:.5px;background:linear-gradient(135deg,#ff394a,#c91627);border-color:#ff5967;box-shadow:0 0 14px #ff263833,inset 0 1px 0 #ffffff22}
+
+.color-shop{border-top:1px solid #293641;padding-top:8px;margin-top:4px}.color-title{text-align:center;color:#8995a4;font-size:7px;font-weight:900;letter-spacing:.5px;margin-bottom:6px}.colors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.color-btn{min-height:42px;border:1px solid #46535e;border-radius:7px;background:#0d141b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px;touch-action:manipulation}.color-btn .dot{width:16px;height:16px;border-radius:50%;border:2px solid #dce3e8;box-shadow:0 0 7px #0008}.color-btn .price{font-size:5.5px;color:#8995a4;font-weight:900}.color-btn.selected{border-color:#35b8ff;box-shadow:0 0 10px #35b8ff33,inset 0 1px 0 #ffffff18}.color-btn.locked{opacity:.72}.color-btn:active{transform:translateY(1px)}.msg{min-height:46px;text-align:center;color:var(--muted);font-size:8px;display:flex;align-items:center;justify-content:center}.start{width:100%;height:43px;border-radius:7px;border:1px solid #52606c;color:#fff;font-size:9px;font-weight:950;letter-spacing:.5px;background:linear-gradient(135deg,#ff394a,#c91627);border-color:#ff5967;box-shadow:0 0 14px #ff263833,inset 0 1px 0 #ffffff22}
 .footer{text-align:center;color:#66727e;font-size:6.5px;padding-top:5px;border-top:1px solid #202a33}
 @media(max-height:650px){.page{gap:5px;padding:6px}.card{padding:8px}.react{min-width:145px;min-height:145px;width:42vw;height:42vw}}
 </style>
@@ -32,17 +33,32 @@ body{display:flex;justify-content:center;align-items:center}
 <section class="card">
 <div class="headline"><div class="kicker">ARCADE MODE</div><h1 class="game-title">REACTION TEST</h1><div class="record" id="record">Рекорд: —</div></div>
 <div class="area"><button class="react" id="react" type="button">НАЖМИ, КОГДА ПОЯВИТСЯ СИГНАЛ</button><div class="result" id="result"></div></div>
+<div class="color-shop"><div class="color-title">ЦВЕТ КНОПКИ</div><div class="colors" id="colors"></div></div>
 <div class="msg" id="msg"></div><button class="start" id="start" type="button">СТАРТ</button>
 </section>
 <div class="footer">Tube Empire • FREEzzzGames Arcade</div>
 </main>
 <script>
+const colorItems=[
+  {id:'white',name:'БЕЛЫЙ',price:0,main:'#f5f7fa',edge:'#dbe4eb',glow:'#ffffff55'},
+  {id:'silver',name:'СЕРЕБРО',price:500,main:'#bfc7cf',edge:'#eef2f5',glow:'#dce6ee66'},
+  {id:'gold',name:'ЗОЛОТО',price:1500,main:'#d8a928',edge:'#ffe27a',glow:'#ffd54a77'},
+  {id:'platinum',name:'ПЛАТИНА',price:4000,main:'#9ed7e8',edge:'#e7fbff',glow:'#b9efff77'},
+  {id:'rose',name:'РОЗ. ЗОЛОТО',price:8000,main:'#d9958c',edge:'#ffd0c9',glow:'#ffb8aa77'}
+];
+const COLOR_KEY='FREEzzzGames_ReactionColor_v1';
 let timer=null,ready=false,startTime=0,best=ArcadeCore.getReactionBest();
-const btn=document.getElementById('react'),msg=document.getElementById('msg'),result=document.getElementById('result'),record=document.getElementById('record');
+let selected=localStorage.getItem(COLOR_KEY)||'white';
+const btn=document.getElementById('react'),msg=document.getElementById('msg'),result=document.getElementById('result'),record=document.getElementById('record'),colors=document.getElementById('colors');
+function owned(id){return id==='white'||localStorage.getItem('FREEzzzGames_ReactionColorOwned_'+id)==='1'}
+function applyColor(){const c=colorItems.find(x=>x.id===selected)||colorItems[0];document.documentElement.style.setProperty('--reaction-main',c.main);document.documentElement.style.setProperty('--reaction-edge',c.edge);document.documentElement.style.setProperty('--reaction-glow',c.glow);renderColors()}
+function renderColors(){colors.innerHTML=colorItems.map(c=>{const isOwned=owned(c.id),isSelected=c.id===selected;return `<button class="color-btn ${isSelected?'selected ':''}${isOwned?'':'locked'}" data-id="${c.id}" type="button"><span class="dot" style="background:${c.main};border-color:${c.edge};box-shadow:0 0 7px ${c.glow}"></span><span class="price">${isOwned?(isSelected?'ВЫБРАНО':'КУПЛЕНО'):(c.price.toLocaleString('de-DE')+' €')}</span></button>`}).join('');colors.querySelectorAll('.color-btn').forEach(b=>b.addEventListener('click',()=>chooseColor(b.dataset.id)))}
+function chooseColor(id){const c=colorItems.find(x=>x.id===id);if(!c)return;if(!owned(id)){if(!window.Core||!Core.spendMoney(c.price)){msg.textContent='Недостаточно денег.';return}localStorage.setItem('FREEzzzGames_ReactionColorOwned_'+id,'1');try{Core.playSound('buy');Core.haptic('heavy')}catch(e){}}selected=id;localStorage.setItem(COLOR_KEY,id);applyColor();msg.textContent='Цвет кнопки выбран.'}
 function renderRecord(){record.textContent='Рекорд: '+(best?best+' ms':'—')}
 function startGame(){clearTimeout(timer);ready=false;startTime=0;btn.classList.remove('go');btn.textContent='ЖДИ СИГНАЛ…';msg.textContent='';timer=setTimeout(()=>{ready=true;startTime=performance.now();btn.classList.add('go');btn.textContent='НАЖМИ!'},700+Math.random()*2200)}
 function tap(){if(!ready){msg.textContent='Жди зелёный сигнал.';return}const ms=Math.round(performance.now()-startTime);ready=false;btn.classList.remove('go');btn.textContent='✓';result.classList.remove('show');void result.offsetWidth;result.textContent=ms+' ms';result.classList.add('show');if(!best||ms<best){best=ms;ArcadeCore.setReactionBest(best)}renderRecord();setTimeout(()=>result.classList.remove('show'),750)}
-btn.addEventListener('click',tap);document.getElementById('start').addEventListener('click',startGame);renderRecord();
+btn.addEventListener('click',tap);document.getElementById('start').addEventListener('click',startGame);
+renderRecord();applyColor();
 </script>
 </body>
 </html>
