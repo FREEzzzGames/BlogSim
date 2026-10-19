@@ -1,0 +1,1 @@
+pluginManagement { repositories { gradlePluginPortal(); mavenCentral() } }; dependencyResolutionManagement { repositories { mavenCentral() } }; rootProject.name="earth-deck-backend"; include(":server")

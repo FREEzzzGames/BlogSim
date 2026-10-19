@@ -1,0 +1,4 @@
+plugins { kotlin("jvm"); kotlin("plugin.serialization"); application }
+repositories { mavenCentral() }
+dependencies { implementation("io.ktor:ktor-server-core-jvm:3.1.1"); implementation("io.ktor:ktor-server-netty-jvm:3.1.1"); implementation("io.ktor:ktor-server-content-negotiation-jvm:3.1.1"); implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:3.1.1"); implementation("io.ktor:ktor-server-websockets-jvm:3.1.1"); implementation("io.ktor:ktor-server-cors-jvm:3.1.1"); implementation("org.postgresql:postgresql:42.7.5"); implementation("org.flywaydb:flyway-core:11.3.4"); implementation("org.flywaydb:flyway-database-postgresql:11.3.4"); implementation("io.lettuce:lettuce-core:6.5.3.RELEASE"); implementation("ch.qos.logback:logback-classic:1.5.16") }
+application { mainClass.set("com.freezzz.earthdeck.server.ApplicationKt") }
