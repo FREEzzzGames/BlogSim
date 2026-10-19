@@ -1,3 +1,4 @@
 plugins { id("com.android.library"); id("org.jetbrains.kotlin.android"); id("org.jetbrains.kotlin.plugin.serialization") }
-android { namespace="com.freezzz.earthdeck.datastore"; compileSdk=35; defaultConfig { minSdk=26 } compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 } }
+android { namespace="com.freezzz.earthdeck.datastore"; compileSdk=35; defaultConfig { minSdk=26 }
+    compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 } }
 dependencies { implementation("androidx.datastore:datastore:1.1.3"); implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0") }
