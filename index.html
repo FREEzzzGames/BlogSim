@@ -67,6 +67,38 @@ button,.text-button,.card{touch-action:manipulation;-webkit-tap-highlight-color:
  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
+
+/* PLANET EARTH CONTROL DECK — operational dashboard layout */
+.section-head{border:1px solid var(--line);background:#111820;padding:10px 12px;margin-bottom:10px}
+.section-head h3{font-size:12px;letter-spacing:.08em}
+.hero{display:none}
+.grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.8fr);grid-template-areas:"geo weather" "geo space" "transport transport" "environment infrastructure";gap:10px}
+.card[data-feed="geophysics"]{grid-area:geo;min-height:340px}
+.card[data-feed="weather"]{grid-area:weather}
+.card[data-feed="space"]{grid-area:space}
+.card[data-feed="transport"]{grid-area:transport}
+.card[data-feed="environment"]{grid-area:environment}
+.card[data-feed="infrastructure"]{grid-area:infrastructure}
+.card{border-radius:2px;position:relative;overflow:hidden}
+.card:before{content:"";display:block;position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cyan);opacity:.7}
+.card[data-feed="geophysics"]:before{background:#e6b26c}
+.card[data-feed="weather"]:before{background:#8be0a3}
+.card[data-feed="space"]:before{background:#65a9e8}
+.card[data-feed="transport"]:before{background:#d98c5f}
+.card[data-feed="infrastructure"]:before{background:#65b9d9}
+.card-top,.value,.detail,.card-bottom{margin-left:4px}
+.card-title{font-size:13px;letter-spacing:.07em}
+.value{font-size:clamp(24px,3vw,36px)}
+.card-bottom{border-top:1px solid #273542}
+.lower{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.panel{border-radius:2px}
+@media(max-width:700px){
+ .grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"geo" "weather" "space" "transport" "environment" "infrastructure";gap:8px}
+ .card[data-feed="geophysics"]{min-height:0}
+ .lower{grid-template-columns:minmax(0,1fr)}
+ .section-head{margin-bottom:8px}
+}
+
 </style>
 </head>
 <body>
