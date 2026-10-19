@@ -99,6 +99,37 @@ button,.text-button,.card{touch-action:manipulation;-webkit-tap-highlight-color:
  .section-head{margin-bottom:8px}
 }
 
+
+/* Reference dashboard rebuild: dense command-centre layout */
+@media(min-width:601px){
+ .shell{max-width:1600px;padding:18px 26px 28px}
+ .hero{display:none}
+ .grid{grid-template-columns:minmax(0,1.55fr) minmax(280px,.8fr);grid-template-areas:"geo weather" "geo space" "transport transport" "environment infrastructure";gap:10px}
+ .card[data-feed="geophysics"]{grid-area:geo;min-height:430px}
+ .card[data-feed="weather"]{grid-area:weather}
+ .card[data-feed="space"]{grid-area:space}
+ .card[data-feed="transport"]{grid-area:transport}
+ .card[data-feed="environment"]{grid-area:environment}
+ .card[data-feed="infrastructure"]{grid-area:infrastructure}
+ .lower{grid-template-columns:1fr 1fr}
+}
+.section-head{margin-top:4px;background:#131a20;border-left:4px solid var(--cyan)}
+.card{border-radius:3px;background:linear-gradient(155deg,#111920,#0a0f14);padding:15px 17px}
+.card:after{content:"";display:block;height:74px;margin:14px 0 10px;border:1px solid #25333b;background-color:#0a1117;background-image:linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px);background-size:22px 22px;position:relative;opacity:.85}
+.card[data-feed="geophysics"]:after{height:190px;background-image:radial-gradient(circle at 18% 28%,#d9a15b 0 2px,transparent 3px),radial-gradient(circle at 22% 44%,#d9a15b 0 2px,transparent 3px),radial-gradient(circle at 29% 50%,#d9a15b 0 2px,transparent 3px),radial-gradient(circle at 47% 34%,#d9a15b 0 2px,transparent 3px),radial-gradient(circle at 54% 42%,#d9a15b 0 2px,transparent 3px),radial-gradient(circle at 73% 50%,#d9a15b 0 2px,transparent 3px),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px);background-size:auto,auto,auto,auto,auto,auto,22px 22px,22px 22px}
+.card[data-feed="weather"]:after{height:100px;background-image:linear-gradient(165deg,transparent 0 25%,#72b7cf 26% 28%,transparent 29% 42%,#dca35f 43% 45%,transparent 46%),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px);background-size:100% 100%,22px 22px,22px 22px}
+.card[data-feed="space"]:after{height:100px;border-radius:50% 50% 2px 2px;background-image:radial-gradient(ellipse at 50% 50%,#56d5d0 0 2px,transparent 5px),linear-gradient(155deg,transparent 45%,#528d9b 46% 47%,transparent 48%),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px);background-size:100% 100%,100% 100%,22px 22px,22px 22px}
+.card[data-feed="transport"]:after{height:135px;background-image:linear-gradient(25deg,transparent 20%,#c88c57 21% 22%,transparent 23% 46%,#4a9d9b 47% 48%,transparent 49%),linear-gradient(145deg,transparent 35%,#4a9d9b 36% 37%,transparent 38% 66%,#c88c57 67% 68%,transparent 69%),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px);background-size:100% 100%,100% 100%,22px 22px,22px 22px}
+.card[data-feed="environment"]:after{background-image:radial-gradient(circle at 22% 42%,#80b985 0 3px,transparent 4px),radial-gradient(circle at 58% 62%,#80b985 0 3px,transparent 4px),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px)}
+.card[data-feed="infrastructure"]:after{background-image:radial-gradient(circle at 25% 40%,#56b7d5 0 2px,transparent 4px),radial-gradient(circle at 48% 35%,#56b7d5 0 2px,transparent 4px),radial-gradient(circle at 70% 60%,#56b7d5 0 2px,transparent 4px),linear-gradient(#17252d 1px,transparent 1px),linear-gradient(90deg,#17252d 1px,transparent 1px)}
+.card-bottom{margin-top:auto}
+@media(max-width:600px){
+ .grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"geo" "weather" "space" "transport" "environment" "infrastructure"}
+ .card[data-feed="geophysics"]{min-height:0}
+ .card[data-feed="geophysics"]:after{height:140px}
+ .card:after{height:65px;margin:10px 0}
+}
+
 </style>
 </head>
 <body>
