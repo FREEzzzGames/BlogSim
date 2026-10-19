@@ -11,6 +11,62 @@
 *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:radial-gradient(ellipse at 75% -20%,#19313b 0,transparent 44%),var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}.shell{max-width:1440px;margin:auto;padding:22px clamp(14px,3vw,36px) 36px}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line);padding-bottom:16px}.brand{display:flex;align-items:center;gap:12px}.mark{width:40px;height:40px;border:1px solid var(--cyan);display:grid;place-items:center;color:var(--cyan);font:700 19px var(--mono);box-shadow:inset 0 0 20px #65e5dc12}.eyebrow,.mono{font-family:var(--mono);letter-spacing:.1em}.eyebrow{font-size:10px;color:var(--cyan);text-transform:uppercase}.brand h1{font-size:clamp(17px,2vw,23px);letter-spacing:.04em;margin:2px 0 0;font-weight:650}.top-actions{display:flex;align-items:center;gap:8px}.btn{background:#121c26;border:1px solid #344552;color:var(--text);padding:9px 12px;font:11px var(--mono);letter-spacing:.05em}.btn:hover{border-color:var(--cyan);color:var(--cyan)}.btn.primary{background:var(--cyan);border-color:var(--cyan);color:#061011;font-weight:700}.statusline{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:15px 0 19px;color:var(--muted);font:10px var(--mono);letter-spacing:.08em}.status-left{display:flex;gap:18px;flex-wrap:wrap}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:7px}.dot.ok{background:var(--green);box-shadow:0 0 9px #8be0a355}.dot.bad{background:var(--red)}.hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.75fr);gap:14px;margin-bottom:14px}.hero-main,.hero-side,.card,.section-head{border:1px solid var(--line);background:linear-gradient(145deg,#111a23,#0b1017)}.hero-main{padding:clamp(18px,3vw,30px);position:relative;overflow:hidden;min-height:220px}.hero-main:after{content:"";position:absolute;width:250px;height:250px;border:1px solid #65e5dc22;border-radius:50%;right:-60px;top:-65px;box-shadow:0 0 0 25px #65e5dc08,0 0 0 55px #65e5dc05;pointer-events:none}.kicker{font:10px var(--mono);color:var(--cyan);letter-spacing:.14em}.hero-main h2{font-size:clamp(25px,4vw,43px);line-height:1.05;letter-spacing:-.04em;max-width:600px;margin:16px 0 12px;font-weight:620}.hero-main p{color:#a2b3c0;max-width:520px;margin:0 0 22px}.hero-foot{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font:10px var(--mono)}.hero-side{padding:20px;display:flex;flex-direction:column;justify-content:space-between}.side-label{font:10px var(--mono);color:var(--muted);letter-spacing:.1em}.weather-value{font:clamp(36px,5vw,54px) var(--mono);letter-spacing:-.08em;margin:14px 0 2px}.weather-sub{color:var(--muted);font-size:12px}.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid var(--line);padding-top:15px;margin-top:18px}.mini-stat span{display:block;color:var(--muted);font:9px var(--mono);margin-bottom:5px}.mini-stat strong{font:18px var(--mono);font-weight:500}.section-head{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;margin-bottom:10px}.section-head h3{font:11px var(--mono);letter-spacing:.1em;margin:0}.section-head span{font:10px var(--mono);color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.card{padding:17px;min-height:195px;display:flex;flex-direction:column;transition:border-color .15s}.card:hover{border-color:#45616e}.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.card-title{font:11px var(--mono);letter-spacing:.08em}.card-source{font:9px var(--mono);color:var(--muted);margin-top:5px}.pill{font:9px var(--mono);padding:4px 6px;border:1px solid #46515a;color:var(--muted);white-space:nowrap}.pill.live{border-color:#286b58;color:var(--green)}.pill.warn{border-color:#7d6033;color:var(--amber)}.value{font:clamp(23px,3vw,34px) var(--mono);letter-spacing:-.07em;margin:20px 0 5px;overflow-wrap:anywhere}.detail{font-size:12px;color:#9badba;min-height:34px}.card-bottom{display:flex;justify-content:space-between;gap:8px;align-items:center;border-top:1px solid #1e2a34;padding-top:11px;margin-top:auto;color:var(--muted);font:9px var(--mono)}.text-button{border:0;background:transparent;color:var(--cyan);font:10px var(--mono);padding:0}.lower{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;margin-top:14px}.panel{border:1px solid var(--line);background:var(--panel);padding:18px}.panel h3{font:11px var(--mono);letter-spacing:.1em;margin:0 0 15px}.feed{display:grid;gap:10px}.feed-row{display:grid;grid-template-columns:72px 1fr;gap:10px;padding-bottom:10px;border-bottom:1px solid #1c2933}.feed-row:last-child{border:0;padding-bottom:0}.feed-time{font:10px var(--mono);color:var(--cyan)}.feed-copy{font-size:12px;color:#b7c4ce}.feed-copy small{display:block;color:var(--muted);margin-top:3px}.mapbox{min-height:180px;background:linear-gradient(#14202a 1px,transparent 1px),linear-gradient(90deg,#14202a 1px,transparent 1px),radial-gradient(ellipse at center,#102b34,#0a1118 70%);background-size:24px 24px,24px 24px,auto;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.orb{width:125px;height:125px;border:1px solid #65e5dc88;border-radius:50%;background:radial-gradient(circle at 32% 30%,#3b7d83,#16404c 48%,#08151e 72%);box-shadow:0 0 35px #65e5dc20,inset -14px -10px 25px #03070b;position:relative}.orb:before{content:"";position:absolute;inset:18px 24px;border-radius:40% 60% 48% 52%;background:#65e5dc16;transform:rotate(-28deg)}.orbit{position:absolute;width:190px;height:65px;border:1px solid #65e5dc44;border-radius:50%;transform:rotate(-20deg)}.map-caption{position:absolute;bottom:10px;left:12px;right:12px;display:flex;justify-content:space-between;color:var(--muted);font:9px var(--mono)}.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#607382;font:9px var(--mono);padding:20px 2px 0;letter-spacing:.04em}.modal-backdrop{position:fixed;inset:0;background:#020609d9;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal-backdrop.open{display:flex}.modal{width:min(720px,100%);max-height:85vh;overflow:auto;background:#0d151d;border:1px solid #40525f;padding:20px}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.modal h2{font:15px var(--mono);margin:0}.modal label{display:block;color:var(--muted);font:10px var(--mono);margin:17px 0 7px}.modal input,.modal select{width:100%;padding:11px;background:#070c11;border:1px solid #334451;color:var(--text)}.modal pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#b4c5d0;background:#080d12;padding:12px;font-size:11px;max-height:40vh;overflow:auto}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}.notice{padding:11px 13px;border:1px solid #5a4729;background:#211b12;color:#d8bb83;font-size:11px;margin-top:12px}.hidden{display:none!important}
 @media(max-width:850px){.hero{grid-template-columns:1fr}.hero-side{min-height:200px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.lower{grid-template-columns:1fr}}
 @media(max-width:520px){.shell{padding:14px 12px 24px}.topline{align-items:flex-start}.brand{gap:8px}.mark{width:34px;height:34px}.top-actions{flex-direction:column;align-items:stretch}.top-actions .btn{padding:7px 8px}.statusline{font-size:9px}.grid{grid-template-columns:1fr}.card{min-height:165px}.hero-main{min-height:250px}.hero-main:after{right:-160px}.section-head{padding:12px}.lower{gap:10px}}
+
+/* Touch-first portrait layout */
+html{scroll-padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+button,.text-button,.card{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn,.text-button{min-height:48px}
+.card{min-width:0}
+.mobile-nav{display:none}
+@media(max-width:600px){
+ body{min-height:100dvh}
+ .shell{padding:10px 10px calc(94px + env(safe-area-inset-bottom))}
+ .topline{align-items:center;gap:8px;padding-bottom:10px}
+ .brand{min-width:0;align-items:flex-start}
+ .mark{flex:0 0 32px;width:32px;height:32px;font-size:16px}
+ .eyebrow{font-size:8px;letter-spacing:.06em}
+ .brand h1{font-size:15px;line-height:1.2;letter-spacing:0}
+ .top-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:0 0 auto}
+ .top-actions .btn{padding:5px 7px;min-height:44px;font-size:9px;white-space:nowrap}
+ #refreshBtn{grid-column:1/-1}
+ .statusline{padding:10px 0 12px;gap:6px;font-size:9px;letter-spacing:0}
+ .status-left{gap:6px 12px}
+ .hero{grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:10px}
+ .hero-main{padding:16px;min-height:0}
+ .hero-main h2{font-size:27px;margin:12px 0 9px}
+ .hero-main p{font-size:12px;margin-bottom:14px}
+ .hero-foot{gap:8px;font-size:8px}
+ .hero-side{padding:14px;min-height:0;gap:12px}
+ .weather-value{font-size:38px;margin:7px 0 0}
+ .mini-stats{margin-top:10px;padding-top:10px}
+ .section-head{padding:11px 12px;margin-bottom:8px;gap:8px}
+ .section-head h3{font-size:10px}
+ .section-head span{font-size:8px;text-align:right}
+ .grid{grid-template-columns:minmax(0,1fr);gap:8px}
+ .card{padding:14px;min-height:0}
+ .value{font-size:28px;margin:13px 0 4px}
+ .detail{min-height:0;margin-bottom:10px}
+ .card-bottom{padding-top:7px;gap:8px;align-items:center}
+ .text-button{padding:4px 0;min-width:64px}
+ .lower{grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px}
+ .panel{padding:14px}
+ .footer{padding:14px 2px 0;font-size:8px;gap:7px}
+ .modal-backdrop{align-items:flex-end;padding:0}
+ .modal{width:100%;max-height:88dvh;padding:16px 14px calc(16px + env(safe-area-inset-bottom));border-bottom:0}
+ .modal input,.modal select{min-height:48px}
+ .modal-actions .btn{flex:1}
+ .mobile-nav{position:fixed;z-index:9;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:#080b10f5;border-top:1px solid var(--line);backdrop-filter:blur(12px)}
+ .mobile-nav button{min-width:0;min-height:52px;border:0;border-right:1px solid var(--line);background:transparent;color:var(--muted);font:9px var(--mono);letter-spacing:.04em}
+ .mobile-nav button:last-child{border-right:0}
+ .mobile-nav button:active,.mobile-nav button.active{background:var(--text);color:var(--bg)}
+}
+@media(min-width:601px) and (max-width:850px){
+ .shell{padding:16px}
+ .topline{align-items:flex-start}
+ .top-actions{flex-wrap:wrap;justify-content:flex-end}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -33,10 +89,11 @@
  <article class="card" data-feed="infrastructure"><div class="card-top"><div><div class="card-title">INFRASTRUCTURE</div><div class="card-source">CLOUDFLARE DNS OVER HTTPS</div></div><span class="pill">LOADING</span></div><div class="value">—</div><div class="detail">Checking public DNS resolver reachability…</div><div class="card-bottom"><span>NETWORK / DNS</span><button class="text-button" data-detail="infrastructure">INSPECT ↗</button></div></article>
  <article class="card" data-feed="transport"><div class="card-top"><div><div class="card-title">TRANSPORT</div><div class="card-source">TRANSPORT REST / NEAR PFORZHEIM</div></div><span class="pill">LOADING</span></div><div class="value">—</div><div class="detail">Retrieving nearby public transport locations…</div><div class="card-bottom"><span>REGIONAL / PUBLIC</span><button class="text-button" data-detail="transport">INSPECT ↗</button></div></article>
 </section>
-<section class="lower">
- <div class="panel"><h3>EVENT LOG / SOURCE UPDATES</h3><div class="feed" id="eventLog"><div class="feed-row"><div class="feed-time">SYSTEM</div><div class="feed-copy">Dashboard initialized.<small>Waiting for first source response.</small></div></div></div></div>
- <div class="panel"><h3>ORBITAL OVERVIEW / SCHEMATIC</h3><div class="mapbox"><div class="orbit"></div><div class="orb"></div><div class="map-caption"><span id="orbitCoords">ISS POSITION: NOT LOADED</span><span>SCHEMATIC / NOT TO SCALE</span></div></div><div class="notice">This view is an interface schematic, not a live satellite map. Telemetry coordinates are shown in the Space / Orbit module when available.</div></div>
+<section class="lower" id="dataSection">
+ <div class="panel" id="eventsPanel"><h3>EVENT LOG / SOURCE UPDATES</h3><div class="feed" id="eventLog"><div class="feed-row"><div class="feed-time">SYSTEM</div><div class="feed-copy">Dashboard initialized.<small>Waiting for first source response.</small></div></div></div></div>
+ <div class="panel" id="systemPanel"><h3>ORBITAL OVERVIEW / SCHEMATIC</h3><div class="mapbox"><div class="orbit"></div><div class="orb"></div><div class="map-caption"><span id="orbitCoords">ISS POSITION: NOT LOADED</span><span>SCHEMATIC / NOT TO SCALE</span></div></div><div class="notice">This view is an interface schematic, not a live satellite map. Telemetry coordinates are shown in the Space / Orbit module when available.</div></div>
 </section>
+<nav class="mobile-nav" aria-label="Dashboard navigation"><button type="button" data-nav="world" class="active">WORLD</button><button type="button" data-nav="events">EVENTS</button><button type="button" data-nav="data">DATA</button><button type="button" data-nav="system">SYSTEM</button></nav>
 <footer class="footer"><span>PEC-D / WEB CLIENT 1.0.0</span><span>PUBLIC SOURCES · NO API KEYS IN CLIENT</span><span id="backendState">BACKEND: NOT CONFIGURED</span></footer>
 </div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-head"><h2 id="modalTitle">FEED INSPECTOR</h2><button class="btn" id="closeModal">CLOSE ×</button></div><div id="modalBody"></div></div></div>
@@ -71,6 +128,12 @@
  function openModal(title,body){$('#modalTitle').textContent=title;$('#modalBody').replaceChildren(body);$('#modalBackdrop').classList.add('open');}
  function inspect(key){const d=definitions[key],f=state.feeds[key]||{status:'NOT LOADED',value:'—',detail:'No data received yet.',raw:null,time:null,url:d.url};const box=document.createElement('div');const p=document.createElement('p');p.textContent=f.detail+' Status: '+f.status+'.';box.appendChild(p);const label=document.createElement('label');label.textContent='SOURCE';box.appendChild(label);const link=document.createElement('a');link.href=f.url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=f.url;link.style.cssText='color:var(--cyan);overflow-wrap:anywhere;font-size:12px';box.appendChild(link);const rawLabel=document.createElement('label');rawLabel.textContent='RAW RESPONSE / DIAGNOSTICS';box.appendChild(rawLabel);const pre=document.createElement('pre');pre.textContent=JSON.stringify(f.raw??{status:f.status,detail:f.detail,updated:f.time},null,2);box.appendChild(pre);openModal(d.title+' / INSPECTOR',box);}
  document.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>inspect(b.dataset.detail)));
+ document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('[data-nav]').forEach(n=>n.classList.toggle('active',n===b));
+  const targets={world:document.querySelector('.hero'),events:$('#eventsPanel'),data:$('#cards'),system:$('#systemPanel')};
+  if(b.dataset.nav==='system'){ $('#settingsBtn').click(); return; }
+  targets[b.dataset.nav]?.scrollIntoView({behavior:'smooth',block:'start'});
+ }));
  $('#refreshBtn').addEventListener('click',refresh);
  $('#expertBtn').addEventListener('click',()=>{state.expert=!state.expert;$('#expertBtn').textContent='MODE: '+(state.expert?'EXPERT':'STANDARD');document.body.classList.toggle('expert',state.expert);log('INTERFACE','mode set to '+(state.expert?'expert':'standard'));});
  $('#settingsBtn').addEventListener('click',()=>{const box=document.createElement('div');const p=document.createElement('p');p.textContent='Optional backend base URL. Leave blank to use public data sources directly. The browser never receives API secrets.';box.appendChild(p);const label=document.createElement('label');label.textContent='BACKEND BASE URL';box.appendChild(label);const input=document.createElement('input');input.type='url';input.placeholder='https://your-api.example.com';input.value=state.backend;input.id='backendInput';box.appendChild(input);const note=document.createElement('div');note.className='notice';note.textContent='Backend routes expected: /api/v1/geophysics, weather, space, transport, infrastructure and eonet. Direct source fallback remains enabled.';box.appendChild(note);const actions=document.createElement('div');actions.className='modal-actions';const save=document.createElement('button');save.className='btn primary';save.textContent='SAVE CONNECTION';save.onclick=()=>{state.backend=input.value.trim().replace(/\/$/,'');if(state.backend)localStorage.setItem('pec-backend',state.backend);else localStorage.removeItem('pec-backend');$('#backendState').textContent=state.backend?'BACKEND: '+new URL(state.backend).host:'BACKEND: DIRECT SOURCES';$('#modalBackdrop').classList.remove('open');refresh();};actions.appendChild(save);box.appendChild(actions);openModal('CONNECTION SETTINGS',box);});
